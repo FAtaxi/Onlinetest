@@ -3,12 +3,22 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js", // Nu nodemon gebruiken voor ontwikkeling
+    "test": "echo \"No tests specified\" && exit 0" // Placeholder voor toekomstige tests
   },
   "dependencies": {
     "express": "^4.18.2",
-    "body-parser": "^1.20.2",
     "twilio": "^4.15.0",
     "cors": "^2.8.5"
-  }
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20", // Nodemon als devDependency
+    "body-parser": "^1.20.2" // body-parser voor parsing van inkomende verzoeken (kan eventueel vervangen worden door express.json())
+  },
+  "engines": {
+    "node": ">=14.0.0" // Minimaal versienummer van Node.js
+  },
+  "license": "MIT", // Voeg hier de licentie toe die je wilt gebruiken
+  "description": "A backend server for Taxi application using Express and Twilio"
 }
