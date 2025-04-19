@@ -5,8 +5,18 @@ const twilio = require('twilio');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
 
+// Configure CORS
+const corsOptions = {
+  origin: 'https://jouwdomein.nl', // Vervang door jouw front-end domein
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  exposedHeaders: ['Access-Control-Allow-Private-Network'],
+};
+
+app.use(cors(corsOptions));
+
+// Twilio configuratie
 const accountSid = 'AC62065d08cb81f65011732cf3a80694f5'; // Vervang door je Twilio Account SID
 const authToken = 'f8b5284f7b1f9dff52c6eec96476f0f8'; // Vervang door je Twilio Auth Token
 const client = twilio(accountSid, authToken);
@@ -31,6 +41,8 @@ app.post('/send', async (req, res) => {
       to: toWhatsAppNumber,
       body: message,
     });
+
+    res.setHeader('Access-Control-Allow-Private-Network', 'true'); // Voeg de header toe
     res.status(200).json({ success: true, sid: msg.sid });
   } catch (err) {
     console.error('Fout bij het verzenden via Twilio:', err.message);
