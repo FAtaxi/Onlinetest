@@ -1,17 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const twilio = require('twilio');
 const cors = require('cors');
+const twilio = require('twilio');
 
 const app = express();
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
 const accountSid = 'AC62065d08cb81f65011732cf3a80694f5';
 const authToken = 'f8b5284f7b1f9dff52c6eec96476f0f8';
 const client = twilio(accountSid, authToken);
 
-const fromWhatsAppNumber = 'whatsapp:+14155238886'; 
+const fromWhatsAppNumber = 'whatsapp:+14155238886';
 const toWhatsAppNumber = 'whatsapp:+31647972301';
 
 app.post('/send', async (req, res) => {
