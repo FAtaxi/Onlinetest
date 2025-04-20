@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 // Configure CORS
 const corsOptions = {
-  origin: 'https://fataxi.github.io/Onlinetest/', // Vervang door je front-end domein
+  origin: 'https://fataxi.github.io', // Vervang door je front-end domein
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
   exposedHeaders: ['Access-Control-Allow-Private-Network'],
