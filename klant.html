@@ -7,18 +7,23 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #000000;
+      color: white;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f9;
     }
     .container {
       width: 100%;
       max-width: 600px;
       margin: 0 auto;
       padding: 20px;
-      background-color: #ffffff;
+      background-color: #222222;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+    h2 {
+      text-align: center;
+      color: #ffcc00;
     }
     .input-group {
       margin-bottom: 20px;
@@ -28,7 +33,12 @@
       padding: 10px;
       font-size: 16px;
       border-radius: 5px;
-      border: 1px solid #ccc;
+      border: 1px solid #444444;
+      background-color: #333333;
+      color: white;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
     }
     button {
       width: 100%;
@@ -48,13 +58,24 @@
     }
     .resultaat {
       margin-top: 20px;
+      text-align: center;
     }
     .qr-code {
       text-align: center;
       margin-top: 20px;
     }
-    .hidden {
-      display: none;
+    #locatieKnop {
+      margin-top: 15px;
+      background-color: #444444;
+      padding: 12px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #locatieKnop:hover {
+      background-color: #555555;
     }
   </style>
 </head>
@@ -74,6 +95,10 @@
       <input type="checkbox" id="annulering" required> Accepteer annulering
     </div>
     <button id="berekenBtn" onclick="berekenRit()">Bereken Ritprijs</button>
+    
+    <!-- Haal mijn locatie op knop -->
+    <button id="locatieKnop" onclick="gebruikLocatie()">Haal mijn locatie op</button>
+    
     <div id="resultaat" class="resultaat"></div>
     <button id="boekKnop" onclick="boekRit()">Boek Rit via WhatsApp</button>
     
