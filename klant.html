@@ -124,6 +124,16 @@
       return 1; // Geen toeslag buiten spits of weekend
     }
 
+    function bepaalNachttoeslag() {
+      const now = new Date();
+      const u = now.getHours(); // Het uur van de dag
+      // Nachttoeslag tussen 23:00 en 07:00 uur
+      if (u >= 23 || u < 7) {
+        return 1.5; // 50% toeslag 's nachts
+      }
+      return 1; // Geen nachttoeslag buiten deze uren
+    }
+
     function berekenRitprijs(afstandKm, duurMin) {
       let prijs = 0;
 
@@ -148,8 +158,11 @@
       // Dynamische drukte toeslag
       const drukteToeslag = bepaalDrukteToeslag();
 
+      // Nachttoeslag
+      const nachtToeslag = bepaalNachttoeslag();
+
       // Pas toeslagen toe
-      prijs *= weer * drukteToeslag;
+      prijs *= weer * drukteToeslag * nachtToeslag;
 
       return prijs;
     }
