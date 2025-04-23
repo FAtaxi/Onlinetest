@@ -1,66 +1,91 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FA Taxi Boeking</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FA Taxi Service - Bereken je ritprijs</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f2f2f2;
-      color: #333;
+      background-color: #f4f4f9;
     }
     .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    input, button, textarea, label {
       width: 100%;
-      margin-bottom: 15px;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      width: 100%;
       padding: 10px;
-      font-size: 1rem;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
     button {
-      background-color: #25d366;
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      background-color: #4CAF50;
       color: white;
       border: none;
-      cursor: pointer;
       border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
     }
     #boekKnop {
       display: none;
     }
-    #annuleerCheck {
-      width: auto;
+    .resultaat {
+      margin-top: 20px;
+    }
+    .qr-code {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🚕 Boek je FA Taxi</h2>
-    <input type="text" id="ophaaladres" placeholder="Ophaaladres" />
-    <input type="text" id="afzetadres" placeholder="Afzetadres" />
-    <button onclick="gebruikLocatie()">📍 Gebruik mijn locatie</button>
-    <button onclick="berekenRit()">💰 Bereken ritprijs</button>
-
-    <pre id="resultaat"></pre>
-
-    <label>
-      <input type="checkbox" id="annuleerCheck"> Ik ga akkoord met de annuleringskosten (€10)
-    </label>
-
-    <button id="boekKnop" onclick="boekRit()">✅ Boek en verstuur via WhatsApp</button>
+    <h2>Bereken je ritprijs</h2>
+    <div class="input-group">
+      <label for="ophaaladres">Ophaaladres:</label>
+      <input type="text" id="ophaaladres" placeholder="Vul je ophaaladres in">
+    </div>
+    <div class="input-group">
+      <label for="afzetadres">Afzetadres:</label>
+      <input type="text" id="afzetadres" placeholder="Vul je afzetadres in">
+    </div>
+    <div class="input-group">
+      <label for="annulering">Annuleringskosten (€10):</label>
+      <input type="checkbox" id="annulering" required> Accepteer annulering
+    </div>
+    <button id="berekenBtn" onclick="berekenRit()">Bereken Ritprijs</button>
+    <div id="resultaat" class="resultaat"></div>
+    <button id="boekKnop" onclick="boekRit()">Boek Rit via WhatsApp</button>
+    
+    <!-- QR Code -->
+    <div class="qr-code">
+      <p>Scan deze QR-code om deze pagina te openen op je telefoon:</p>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://fataxi.github.io/FA-Werk/&size=150x150" alt="QR Code">
+    </div>
   </div>
 
   <script>
-    const whatsappNummer = "31647972301"; // zonder 0 of +
-    const weatherApiKey = "9d1afafb80f94518850212856252004";
+    const weatherApiKey = "9d1afafb80f94518850212856252004"; 
 
     async function getCoordinates(adres) {
       const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(adres)}&key=22f9046cc2b242a3a5f08cfabc005f78`;
@@ -132,7 +157,8 @@
     async function berekenRit() {
       const ophalen = document.getElementById("ophaaladres").value;
       const afzetten = document.getElementById("afzetadres").value;
-      if (!ophalen || !afzetten) return alert("Vul beide adressen in.");
+      const annulering = document.getElementById("annulering").checked;
+      if (!ophalen || !afzetten || !annulering) return alert("Vul beide adressen in en accepteer de annulering.");
 
       try {
         const coordOphalen = await getCoordinates(ophalen);
@@ -151,7 +177,7 @@
         const routecomp = berekenRoutecompensatie(afstandKm);
 
         const totaal = ritprijs + routecomp;
-        const resultText = `🚖 Ritprijs: €${totaal.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\nWeer: ${weer || 'Onbekend'}\nRoutecompensatie: €${routecomp.toFixed(2)}\n\n📌 Annuleringskosten: €10`;
+        const resultText = `🚖 Ritprijs: €${totaal.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\nWeer: ${weer || 'Onbekend'}\n\n📌 Annuleringskosten: €10`;
 
         document.getElementById("resultaat").innerText = resultText;
         document.getElementById("boekKnop").style.display = "block";
@@ -161,19 +187,15 @@
       }
     }
 
-    function boekRit() {
-      if (!document.getElementById("annuleerCheck").checked) {
-        alert("Je moet akkoord gaan met de annuleringskosten.");
-        return;
-      }
-
+    async function boekRit() {
       const ophalen = document.getElementById("ophaaladres").value;
       const afzetten = document.getElementById("afzetadres").value;
       const prijsInfo = document.getElementById("resultaat").innerText;
 
-      const bericht = `📲 Nieuw ritverzoek%0A📍 Ophaaladres: ${encodeURIComponent(ophalen)}%0A📍 Afzetadres: ${encodeURIComponent(afzetten)}%0A%0A${encodeURIComponent(prijsInfo)}`;
+      const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n\n${prijsInfo}`;
 
-      window.open(`https://wa.me/${whatsappNummer}?text=${bericht}`, '_blank');
+      const whatsappUrl = `https://wa.me/31647972301?text=${encodeURIComponent(bericht)}`;
+      window.location.href = whatsappUrl;
     }
   </script>
 </body>
