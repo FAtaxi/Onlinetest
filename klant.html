@@ -1,122 +1,202 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <title>FA Taxi Service - Ritprijs Berekening</title>
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FA Taxi Service</title>
   <style>
     body {
-      font-family: Arial;
-      margin: 20px;
+      background-color: #000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      padding: 20px;
+    }
+    h1 {
+      color: red;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: #111;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,215,0,0.2);
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    input {
+      background-color: #222;
+      color: white;
+    }
+    button {
+      background-color: gold;
+      color: black;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #e6c200;
     }
     #resultaat {
-      margin-top: 20px;
-      font-weight: bold;
+      background-color: #222;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <h2>FA Taxi Ritprijs Berekening</h2>
-
-  <button onclick="haalLocatieOp()">📍 Haal mijn locatie op</button>
-  <input type="text" id="bestemming" placeholder="Afzetlocatie (adres)">
-  <button onclick="berekenRit()">🚖 Bereken Ritprijs</button>
-
-  <div id="resultaat">...</div>
+  <h1>FA Taxi Service</h1>
+  <div class="container">
+    <input type="text" id="ophaaladres" placeholder="Ophaaladres">
+    <input type="text" id="afzetadres" placeholder="Afzetadres">
+    <button onclick="gebruikLocatie()">📍 Gebruik mijn locatie</button>
+    <button onclick="berekenRit()">Bereken ritprijs</button>
+    <div id="resultaat"></div>
+    <button id="boekKnop" onclick="boekRit()" style="display:none;">Boek nu via WhatsApp</button>
+  </div>
 
   <script>
-    let start = null; // klantlocatie
+    const weatherApiKey = "9d1afafb80f94518850212856252004";
 
-    function haalLocatieOp() {
-      navigator.geolocation.getCurrentPosition(pos => {
-        start = [pos.coords.longitude, pos.coords.latitude];
-        document.getElementById('resultaat').innerText = "Locatie opgehaald!";
-      });
+    async function getCoordinates(adres) {
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(adres)}&key=22f9046cc2b242a3a5f08cfabc005f78`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.results.length === 0) throw new Error("Geen locatie gevonden.");
+      const { lat, lng } = data.results[0].geometry;
+      return [lng, lat];
     }
 
-    async function geocodeAdres(adres) {
-      const response = await axios.get("https://api.openrouteservice.org/geocode/search", {
-        params: {
-          api_key: "5b3ce3597851110001cf6248b59dc263cab24bdabda48748cd9122b3",
-          text: adres
+    async function getWeer(latitude, longitude) {
+      const url = `https://api.weatherapi.com/v1/current.json?key=${weatherApiKey}&q=${latitude},${longitude}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data && data.current && data.current.condition) {
+          return data.current.condition.text;
         }
-      });
-      const coords = response.data.features[0].geometry.coordinates;
-      return coords;
-    }
-
-    function bepaalNachttoeslag() {
-      const uur = new Date().getHours();
-      return (uur >= 22 || uur < 6) ? 1.25 : 1;
+        return null;
+      } catch (error) {
+        console.error('Fout bij het ophalen van weergegevens:', error);
+        return null;
+      }
     }
 
     function bepaalDrukteToeslag() {
-      const uur = new Date().getHours();
-      return (uur >= 7 && uur <= 9) || (uur >= 16 && uur <= 18) ? 1.2 : 1;
+      const now = new Date();
+      const u = now.getHours();
+      const dayOfWeek = now.getDay();
+      if ((u >= 7 && u <= 9) || (u >= 16 && u <= 18)) return 1.2;
+      if (dayOfWeek === 0 || dayOfWeek === 6) return 1.15;
+      return 1;
     }
 
-    function berekenRitprijs(afstandKm, duurMin, routeVanafStandplaats) {
+    function bepaalNachttoeslag() {
+      const now = new Date();
+      const u = now.getHours();
+      if (u >= 23 || u < 7) return 1.5;
+      return 1;
+    }
+
+    function berekenRitprijs(afstandKm, duurMin) {
       let prijs = 0;
-      const vasteTarieven = {
-        3: 15, 4: 17.5, 5: 20, 6: 22.5,
-        7: 25, 8: 27.5, 9: 30
-      };
+      if (afstandKm <= 3) prijs = 15.00;
+      else if (afstandKm <= 4) prijs = 17.50;
+      else if (afstandKm <= 5) prijs = 20.00;
+      else if (afstandKm <= 6) prijs = 22.50;
+      else if (afstandKm <= 7) prijs = 25.00;
+      else if (afstandKm <= 8) prijs = 27.50;
+      else if (afstandKm <= 9) prijs = 30.00;
+      else prijs = 2.50 + (2.00 * afstandKm) + (0.30 * duurMin);
 
-      if (afstandKm <= 9) {
-        prijs = vasteTarieven[Math.ceil(afstandKm)] || 30;
-      } else {
-        prijs = 2.50 + 2.00 * afstandKm + 0.30 * duurMin;
-      }
+      const regenToeslag = document.getElementById("resultaat").innerText.includes("Regen") ? 1.2 : 1;
+      const drukteToeslag = bepaalDrukteToeslag();
+      const nachtToeslag = bepaalNachttoeslag();
 
-      if (routeVanafStandplaats > 5) {
-        prijs += routeVanafStandplaats * 1.00;
-      }
-
-      const weer = document.getElementById("resultaat").innerText.includes("Regen") ? 1.2 : 1;
-      prijs *= bepaalNachttoeslag() * bepaalDrukteToeslag() * weer;
-
-      return prijs;
+      return prijs * regenToeslag * drukteToeslag * nachtToeslag;
     }
 
-    async function controleerWeer(lat, lon) {
-      const api = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=precipitation`;
-      const res = await fetch(api);
-      const data = await res.json();
-      return data.current.precipitation > 0;
+    async function gebruikLocatie() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (positie) => {
+          const lat = positie.coords.latitude;
+          const lon = positie.coords.longitude;
+          const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=22f9046cc2b242a3a5f08cfabc005f78`;
+          const res = await fetch(url);
+          const data = await res.json();
+          const adres = data.results[0].formatted;
+          document.getElementById("ophaaladres").value = adres;
+        });
+      } else {
+        alert("Locatie niet ondersteund.");
+      }
     }
 
     async function berekenRit() {
-      const bestemmingAdres = document.getElementById("bestemming").value;
-      if (!start) return alert("Eerst locatie ophalen!");
-      if (!bestemmingAdres) return alert("Voer een afzetlocatie in!");
-
-      const eind = await geocodeAdres(bestemmingAdres);
-
-      // Bereken afstand en tijd van rit
-      const ritUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248b59dc263cab24bdabda48748cd9122b3&start=${start[0]},${start[1]}&end=${eind[0]},${eind[1]}`;
-      const ritRes = await fetch(ritUrl);
-      const ritData = await ritRes.json();
-      const afstandKm = ritData.features[0].properties.summary.distance / 1000;
-      const duurMin = ritData.features[0].properties.summary.duration / 60;
-
-      // Bereken afstand vanaf standplaats (voorbeeld: Amsterdam)
-      const standplaats = [4.8952, 52.3702];
-      const routeKlantUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248b59dc263cab24bdabda48748cd9122b3&start=${standplaats[0]},${standplaats[1]}&end=${start[0]},${start[1]}`;
-      const klantRes = await fetch(routeKlantUrl);
-      const klantData = await klantRes.json();
-      const routeVanafStandplaats = klantData.features[0].properties.summary.distance / 1000;
-
-      // Weer check
-      const regen = await controleerWeer(start[1], start[0]);
-
-      if (regen) {
-        document.getElementById("resultaat").innerText = "Let op: Regen, toeslag actief 🌧️";
+      const ophalen = document.getElementById("ophaaladres").value;
+      const afzetten = document.getElementById("afzetadres").value;
+      if (!ophalen || !afzetten) {
+        alert("Vul beide adressen in.");
+        return;
       }
+      try {
+        const start = await getCoordinates(ophalen);
+        const eind = await getCoordinates(afzetten);
 
-      const prijs = berekenRitprijs(afstandKm, duurMin, routeVanafStandplaats);
+        const routeURL = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248b59dc263cab24bdabda48748cd9122b3&start=${start[0]},${start[1]}&end=${eind[0]},${eind[1]}`;
+        const response = await fetch(routeURL);
+        const data = await response.json();
 
-      document.getElementById("resultaat").innerText += `\nAfstand: ${afstandKm.toFixed(2)} km\nDuur: ${duurMin.toFixed(1)} min\nTotale ritprijs: €${prijs.toFixed(2)}`;
+        const afstandKm = data.features[0].properties.summary.distance / 1000;
+        const duurMin = data.features[0].properties.summary.duration / 60;
+
+        const weer = await getWeer(start[1], start[0]);
+
+        let prijs = berekenRitprijs(afstandKm, duurMin);
+
+        let resultText = `🚖 Ritprijs: €${prijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} minuten`;
+
+        // Routecompensatie als afstand naar klant > 5 km
+        const routeCompensatie = afstandKm > 5 ? (afstandKm - 5) * 1.00 : 0;
+        if (routeCompensatie > 0) {
+          prijs += routeCompensatie;
+          resultText += `\nRoutecompensatie: €${routeCompensatie.toFixed(2)}`;
+        }
+
+        document.getElementById("resultaat").innerText = resultText;
+        document.getElementById("boekKnop").style.display = "block";
+      } catch (err) {
+        console.error(err);
+        alert("Er ging iets mis bij het berekenen van de rit.");
+      }
+    }
+
+    async function boekRit() {
+      const ophalen = document.getElementById("ophaaladres").value;
+      const afzetten = document.getElementById("afzetadres").value;
+      const prijsInfo = document.getElementById("resultaat").innerText;
+      const bericht = `📲 Nieuw ritverzoek\n\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n\n${prijsInfo}`;
+
+      try {
+        const response = await fetch('http://localhost:3000/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: bericht })
+        });
+
+        if (response.ok) alert("Boeking verzonden via WhatsApp!");
+        else alert("Boeking kon niet verzonden worden.");
+      } catch (error) {
+        console.error("Fout bij verzenden via WhatsApp:", error);
+        alert("Er is een fout opgetreden bij het verzenden van de boeking.");
+      }
     }
   </script>
 </body>
