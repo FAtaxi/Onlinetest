@@ -107,13 +107,13 @@
 
     function berekenRitprijs(afstandKm, duurMin) {
       let prijs = 0;
-      if (afstandKm <= 3) prijs = 15.00;
-      else if (afstandKm <= 4) prijs = 17.50;
-      else if (afstandKm <= 5) prijs = 20.00;
-      else if (afstandKm <= 6) prijs = 22.50;
-      else if (afstandKm <= 7) prijs = 25.00;
-      else if (afstandKm <= 8) prijs = 27.50;
-      else if (afstandKm <= 9) prijs = 30.00;
+      if (afstandKm <= 3) prijs = 12.00;
+      else if (afstandKm <= 4) prijs = 14.00;
+      else if (afstandKm <= 5) prijs = 16.00;
+      else if (afstandKm <= 6) prijs = 18.00;
+      else if (afstandKm <= 7) prijs = 20.00;
+      else if (afstandKm <= 8) prijs = 22.50;
+      else if (afstandKm <= 9) prijs = 25.00;
       else prijs = 2.50 + (2.00 * afstandKm) + (0.30 * duurMin);
 
       const regenToeslag = document.getElementById("resultaat").innerText.includes("Regen") ? 1.2 : 1;
