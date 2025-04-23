@@ -25,7 +25,7 @@
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
     }
-    input, button, label {
+    input, button, label, select {
       display: block;
       width: 100%;
       margin: 0.5rem 0;
@@ -34,7 +34,7 @@
       border-radius: 5px;
       font-size: 1rem;
     }
-    input {
+    input, select {
       background: #222;
       color: #fff;
     }
@@ -65,6 +65,14 @@
 
     <label for="tijdstip">🕒 Gewenst tijdstip (optioneel)</label>
     <input type="datetime-local" id="tijdstip">
+
+    <label for="betaalmethode">💳 Kies een betaalmethode</label>
+    <select id="betaalmethode">
+      <option value="Tikkie">🔗 Tikkie (online betaallink)</option>
+      <option value="Online betaallink">🌐 Online betaallink</option>
+      <option value="Pin bij chauffeur">💳 Pin bij chauffeur</option>
+      <option value="Contant">💶 Contant</option>
+    </select>
 
     <button onclick="toggleSpoed()" id="spoedBtn">🚨 Voeg €10 spoedrit toe</button>
     <input type="checkbox" id="akkoord"> Ik ga akkoord met de annuleringskosten van €10,-
@@ -153,6 +161,8 @@
       const ophalen = document.getElementById("ophaaladres").value;
       const afzetten = document.getElementById("afzetadres").value;
       const tijd = document.getElementById("tijdstip").value;
+      const betaalmethode = document.getElementById("betaalmethode").value;
+
       if (!ophalen || !afzetten) return alert("Vul beide adressen in.");
       if (!document.getElementById("akkoord").checked) return alert("Ga akkoord met de annuleringskosten.");
 
@@ -170,11 +180,11 @@
 
         const ritprijs = berekenRitprijs(afstandKm, duurMin, weer);
 
-        const resultText = `🚖 Ritprijs: €${ritprijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\n\n📌 Annuleringskosten: €10 (niet inbegrepen)`;
+        const resultText = `🚖 Ritprijs: €${ritprijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\n💳 Betaalmethode: ${betaalmethode}\n\n📌 Annuleringskosten: €10 (niet inbegrepen)`;
         document.getElementById("resultaat").innerText = resultText;
 
         const tijdInfo = tijd ? `🕒 Gewenst tijdstip: ${tijd}` : "";
-        const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n${tijdInfo}\n\n${resultText}`;
+        const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n${tijdInfo}\n💳 Betaalmethode: ${betaalmethode}\n\n${resultText}`;
 
         const whatsappURL = `https://wa.me/?text=${encodeURIComponent(bericht)}`;
         const link = document.getElementById("whatsappKnop");
