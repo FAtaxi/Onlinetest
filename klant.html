@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FA Taxi Service</title>
   <style>
     body {
       background-color: #000;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: white;
+      font-family: 'Segoe UI', sans-serif;
       padding: 20px;
     }
     h1 {
-      color: red;
       text-align: center;
+      color: gold;
+      font-size: 2.5em;
     }
     .container {
-      max-width: 500px;
-      margin: auto;
-      background-color: #111;
+      background: #111;
       padding: 20px;
       border-radius: 12px;
+      max-width: 500px;
+      margin: auto;
       box-shadow: 0 0 20px rgba(255,215,0,0.2);
     }
-    input, button {
+    input, button, label {
+      display: block;
       width: 100%;
-      padding: 12px;
       margin-top: 10px;
+      padding: 12px;
       border-radius: 6px;
       border: none;
       font-size: 16px;
@@ -46,8 +48,12 @@
     #resultaat {
       background-color: #222;
       padding: 10px;
-      margin-top: 10px;
       border-radius: 6px;
+      margin-top: 10px;
+    }
+    label {
+      color: white;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -57,7 +63,10 @@
     <input type="text" id="ophaaladres" placeholder="Ophaaladres">
     <input type="text" id="afzetadres" placeholder="Afzetadres">
     <button onclick="gebruikLocatie()">📍 Gebruik mijn locatie</button>
+
+    <label><input type="checkbox" id="drukte"> Veel vraag / drukte</label>
     <button onclick="berekenRit()">Bereken ritprijs</button>
+
     <div id="resultaat"></div>
     <button id="boekKnop" onclick="boekRit()" style="display:none;">Boek nu via WhatsApp</button>
   </div>
@@ -65,15 +74,9 @@
   <script>
     const opencageKey = "22f9046cc2b242a3a5f08cfabc005f78";
     const openrouteKey = "5b3ce3597851110001cf6248b59dc263cab24bdabda48748cd9122b3";
+    const weatherKey = "cc9db0a38b9f4e10a88140134252504"; // WeerAPI - Replace with valid key
 
-    async function getCoordinates(adres) {
-      const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(adres)}&key=${opencageKey}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.results.length === 0) throw new Error("Geen locatie gevonden.");
-      const { lat, lng } = data.results[0].geometry;
-      return [lng, lat];
-    }
+    let globaleInfo = {};
 
     async function gebruikLocatie() {
       if (navigator.geolocation) {
@@ -91,14 +94,28 @@
       }
     }
 
+    async function getCoordinates(adres) {
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(adres)}&key=${opencageKey}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.results.length === 0) throw new Error("Geen locatie gevonden.");
+      const { lat, lng } = data.results[0].geometry;
+      return [lng, lat];
+    }
+
+    async function getWeer(lat, lon) {
+      const url = `https://api.weatherapi.com/v1/current.json?key=${weatherKey}&q=${lat},${lon}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.current.condition.text.toLowerCase().includes("rain");
+    }
+
     async function berekenRit() {
       const ophalen = document.getElementById("ophaaladres").value;
       const afzetten = document.getElementById("afzetadres").value;
+      const drukte = document.getElementById("drukte").checked;
 
-      if (!ophalen || !afzetten) {
-        alert("Vul beide adressen in.");
-        return;
-      }
+      if (!ophalen || !afzetten) return alert("Vul beide adressen in.");
 
       try {
         const start = await getCoordinates(ophalen);
@@ -111,10 +128,38 @@
         const afstandKm = data.features[0].properties.summary.distance / 1000;
         const duurMin = data.features[0].properties.summary.duration / 60;
 
-        const prijs = 3 + (afstandKm * 2.00) + (duurMin * 0.50);
-        const resultText = `🚖 Ritprijs: €${prijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} minuten`;
+        // Dynamische tarieven
+        let prijsPerKm = 2.00;
+        let prijsPerMin = 0.50;
+        let starttarief = 3.00;
 
-        document.getElementById("resultaat").innerText = resultText;
+        if (afstandKm <= 3) { prijsPerKm = 3.5; starttarief = 4.5; }
+        else if (afstandKm <= 5) { prijsPerKm = 3.0; starttarief = 4.5; }
+        else if (afstandKm <= 7) { prijsPerKm = 2.8; starttarief = 4.5; }
+        else if (afstandKm <= 10) { prijsPerKm = 2.5; starttarief = 4.5; }
+        else if (afstandKm <= 15) { prijsPerKm = 2.3; starttarief = 4.0; }
+        else { prijsPerKm = 2.0; starttarief = 4.0; }
+
+        let basisPrijs = starttarief + (afstandKm * prijsPerKm) + (duurMin * prijsPerMin);
+
+        const regent = await getWeer(start[1], start[0]);
+        let toeslag = 0;
+        if (regent) toeslag += 0.20;
+        if (drukte) toeslag += 0.20;
+
+        const totaalPrijs = basisPrijs * (1 + toeslag);
+
+        globaleInfo = {
+          ophalen,
+          afzetten,
+          afstandKm: afstandKm.toFixed(1),
+          duurMin: Math.round(duurMin),
+          totaalPrijs: totaalPrijs.toFixed(2)
+        };
+
+        document.getElementById("resultaat").innerText =
+          `🚖 Ritprijs: €${globaleInfo.totaalPrijs}\nAfstand: ${globaleInfo.afstandKm} km\nDuur: ${globaleInfo.duurMin} minuten`;
+
         document.getElementById("boekKnop").style.display = "block";
       } catch (err) {
         console.error(err);
@@ -123,28 +168,11 @@
     }
 
     async function boekRit() {
-      const ophalen = document.getElementById("ophaaladres").value;
-      const afzetten = document.getElementById("afzetadres").value;
-      const prijsInfo = document.getElementById("resultaat").innerText;
+      const bericht = `📲 Nieuw ritverzoek:\n\n📍 Ophaaladres: ${globaleInfo.ophalen}\n📍 Afzetadres: ${globaleInfo.afzetten}\n📏 Afstand: ${globaleInfo.afstandKm} km\n⏱️ Duur: ${globaleInfo.duurMin} minuten\n💶 Ritprijs: €${globaleInfo.totaalPrijs}`;
 
-      const bericht = `📲 Nieuw ritverzoek\n\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n\n${prijsInfo}`;
-
-      try {
-        const response = await fetch('http://localhost:3000/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: bericht })
-        });
-
-        if (response.ok) {
-          alert('✅ Rit succesvol geboekt via WhatsApp!');
-        } else {
-          alert('❌ Fout bij verzenden naar WhatsApp.');
-        }
-      } catch (error) {
-        console.error(error);
-        alert('❌ Fout bij het versturen van het bericht.');
-      }
+      const telefoonnummer = "31647972301";
+      const link = `https://wa.me/${telefoonnummer}?text=${encodeURIComponent(bericht)}`;
+      window.open(link, '_blank');
     }
   </script>
 </body>
