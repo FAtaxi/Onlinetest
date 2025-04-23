@@ -124,6 +124,36 @@
       return 1; // Geen toeslag buiten spits of weekend
     }
 
+    function berekenRitprijs(afstandKm, duurMin) {
+      let prijs = 0;
+
+      // Dynamische tariefstructuur gebaseerd op afstand
+      if (afstandKm <= 3) {
+        prijs = 3.50 * afstandKm + 0.50 * duurMin + 4.50; // 0–3 km
+      } else if (afstandKm > 3 && afstandKm <= 5) {
+        prijs = 3.00 * afstandKm + 0.50 * duurMin + 4.50; // 3–5 km
+      } else if (afstandKm > 5 && afstandKm <= 7) {
+        prijs = 2.80 * afstandKm + 0.50 * duurMin + 4.50; // 5–7 km
+      } else if (afstandKm > 7 && afstandKm <= 10) {
+        prijs = 2.50 * afstandKm + 0.50 * duurMin + 4.50; // 7–10 km
+      } else if (afstandKm > 10 && afstandKm <= 15) {
+        prijs = 2.30 * afstandKm + 0.50 * duurMin + 4.00; // 10–15 km
+      } else if (afstandKm > 15) {
+        prijs = 2.00 * afstandKm + 0.50 * duurMin + 4.00; // >15 km
+      }
+
+      // Toeslag voor regen
+      const weer = document.getElementById("resultaat").innerText.includes("Regen") ? 1.2 : 1;
+
+      // Dynamische drukte toeslag
+      const drukteToeslag = bepaalDrukteToeslag();
+
+      // Pas toeslagen toe
+      prijs *= weer * drukteToeslag;
+
+      return prijs;
+    }
+
     async function berekenRit() {
       const ophalen = document.getElementById("ophaaladres").value;
       const afzetten = document.getElementById("afzetadres").value;
@@ -143,22 +173,14 @@
 
         const afstandKm = data.features[0].properties.summary.distance / 1000;
         const duurMin = data.features[0].properties.summary.duration / 60;
-        const weer = await getWeer(start[1], start[0]); // Haal het weer op bij het ophaaladres
 
+        // Haal het weer op
+        const weer = await getWeer(start[1], start[0]);
+
+        // Bereken ritprijs
+        let prijs = berekenRitprijs(afstandKm, duurMin);
+        
         console.log(`Afstand: ${afstandKm} km, Duur: ${duurMin} minuten, Weer: ${weer}`);
-
-        let prijs = 3 + (afstandKm * 2.00) + (duurMin * 0.50);  // Basisprijs
-
-        // Dynamische toeslag bij regen of slechte weersomstandigheden
-        if (weer && weer.toLowerCase().includes("regen")) {
-          prijs *= 1.2;  // 20% toeslag voor regen
-          console.log("Weer: Regen, toeslag toegepast.");
-        }
-
-        // Dynamische toeslag op basis van tijd van de dag en drukte
-        const drukteToeslag = bepaalDrukteToeslag();
-        prijs *= drukteToeslag;  // Pas de toeslag toe afhankelijk van drukte
-        console.log(`Drukte toeslag toegepast: ${drukteToeslag === 1.2 ? '20%' : '15%'}`);
 
         const resultText = `🚖 Ritprijs: €${prijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} minuten`;
 
