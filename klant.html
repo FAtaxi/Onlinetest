@@ -3,114 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FA Taxi Service - Bereken je ritprijs</title>
+  <title>FA Taxi Boeking</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #000000;
-      color: white;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #000;
+      color: #fff;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      color: gold;
+      margin-bottom: 1rem;
     }
     .container {
+      max-width: 500px;
+      margin: auto;
+      background: #111;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+    input, button, label {
+      display: block;
       width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #222222;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    }
-    h2 {
-      text-align: center;
-      color: #ffcc00;
-    }
-    .input-group {
-      margin-bottom: 20px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
+      margin: 0.5rem 0;
+      padding: 0.7rem;
+      border: none;
       border-radius: 5px;
-      border: 1px solid #444444;
-      background-color: #333333;
-      color: white;
+      font-size: 1rem;
     }
-    input[type="checkbox"] {
-      margin-right: 10px;
+    input {
+      background: #222;
+      color: #fff;
     }
     button {
-      width: 100%;
-      padding: 15px;
-      font-size: 18px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
+      background: gold;
+      color: black;
+      font-weight: bold;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #45a049;
-    }
-    #boekKnop {
-      display: none;
-    }
-    .resultaat {
-      margin-top: 20px;
-      text-align: center;
-    }
-    .qr-code {
-      text-align: center;
-      margin-top: 20px;
-    }
-    #locatieKnop {
-      margin-top: 15px;
-      background-color: #444444;
-      padding: 12px;
-      color: white;
-      border: none;
+    #resultaat {
+      white-space: pre-wrap;
+      background: #222;
+      padding: 1rem;
       border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    #locatieKnop:hover {
-      background-color: #555555;
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
+  <h1>FA Taxi Service</h1>
   <div class="container">
-    <h2>Bereken je ritprijs</h2>
-    <div class="input-group">
-      <label for="ophaaladres">Ophaaladres:</label>
-      <input type="text" id="ophaaladres" placeholder="Vul je ophaaladres in">
-    </div>
-    <div class="input-group">
-      <label for="afzetadres">Afzetadres:</label>
-      <input type="text" id="afzetadres" placeholder="Vul je afzetadres in">
-    </div>
-    <div class="input-group">
-      <label for="annulering">Annuleringskosten (€10):</label>
-      <input type="checkbox" id="annulering" required> Accepteer annulering
-    </div>
-    <button id="berekenBtn" onclick="berekenRit()">Bereken Ritprijs</button>
-    
-    <!-- Haal mijn locatie op knop -->
-    <button id="locatieKnop" onclick="gebruikLocatie()">Haal mijn locatie op</button>
-    
-    <div id="resultaat" class="resultaat"></div>
-    <button id="boekKnop" onclick="boekRit()">Boek Rit via WhatsApp</button>
-    
-    <!-- QR Code -->
-    <div class="qr-code">
-      <p>Scan deze QR-code om deze pagina te openen op je telefoon:</p>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://fataxi.github.io/FA-Werk/&size=150x150" alt="QR Code">
-    </div>
+    <label for="ophaaladres">📍 Ophaaladres</label>
+    <input type="text" id="ophaaladres" placeholder="Bijv. Stationsplein 1, Amsterdam">
+    <button onclick="gebruikLocatie()">📌 Haal mijn locatie op</button>
+
+    <label for="afzetadres">📍 Afzetadres</label>
+    <input type="text" id="afzetadres" placeholder="Bijv. Damrak 50, Amsterdam">
+
+    <button onclick="toggleSpoed()" id="spoedBtn">🚨 Voeg €10 spoedrit toe</button>
+    <input type="checkbox" id="akkoord"> Ik ga akkoord met de annuleringskosten van €10,-
+    <button onclick="berekenRit()">🚖 Bereken ritprijs</button>
+    <div id="resultaat"></div>
+    <button id="boekKnop" onclick="boekRit()" style="display:none;">📩 Bevestig & Verstuur naar WhatsApp</button>
   </div>
 
   <script>
-    const weatherApiKey = "9d1afafb80f94518850212856252004"; 
+    let spoedToeslag = 0;
+    const weatherApiKey = "9d1afafb80f94518850212856252004";
+
+    function toggleSpoed() {
+      spoedToeslag = spoedToeslag === 0 ? 10 : 0;
+      document.getElementById('spoedBtn').innerText = spoedToeslag === 0 ? "🚨 Voeg €10 spoedrit toe" : "✅ Spoedrit toegevoegd (€10)";
+    }
+
+    async function gebruikLocatie() {
+      if (!navigator.geolocation) return alert("Locatie niet ondersteund.");
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=22f9046cc2b242a3a5f08cfabc005f78`;
+        const res = await fetch(url);
+        const data = await res.json();
+        document.getElementById("ophaaladres").value = data.results[0].formatted;
+      });
+    }
 
     async function getCoordinates(adres) {
       const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(adres)}&key=22f9046cc2b242a3a5f08cfabc005f78`;
@@ -145,10 +123,6 @@
       return (u >= 23 || u < 7) ? 1.5 : 1;
     }
 
-    function berekenRoutecompensatie(km) {
-      return km > 5 ? (km - 5) * 1.0 : 0;
-    }
-
     function berekenRitprijs(afstand, duur, weer) {
       let basis = 0;
       if (afstand <= 3) basis = 12;
@@ -165,25 +139,14 @@
       toeslag *= bepaalDrukteToeslag();
       toeslag *= bepaalNachttoeslag();
 
-      return basis * toeslag;
-    }
-
-    async function gebruikLocatie() {
-      if (!navigator.geolocation) return alert("Locatie niet ondersteund.");
-      navigator.geolocation.getCurrentPosition(async pos => {
-        const lat = pos.coords.latitude, lon = pos.coords.longitude;
-        const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=22f9046cc2b242a3a5f08cfabc005f78`;
-        const res = await fetch(url);
-        const data = await res.json();
-        document.getElementById("ophaaladres").value = data.results[0].formatted;
-      });
+      return basis * toeslag + spoedToeslag;
     }
 
     async function berekenRit() {
       const ophalen = document.getElementById("ophaaladres").value;
       const afzetten = document.getElementById("afzetadres").value;
-      const annulering = document.getElementById("annulering").checked;
-      if (!ophalen || !afzetten || !annulering) return alert("Vul beide adressen in en accepteer de annulering.");
+      if (!ophalen || !afzetten) return alert("Vul beide adressen in.");
+      if (!document.getElementById("akkoord").checked) return alert("Ga akkoord met de annuleringskosten.");
 
       try {
         const coordOphalen = await getCoordinates(ophalen);
@@ -195,14 +158,11 @@
 
         const afstandKm = data.features[0].properties.summary.distance / 1000;
         const duurMin = data.features[0].properties.summary.duration / 60;
-
         const weer = await getWeer(coordOphalen[1], coordOphalen[0]);
 
         const ritprijs = berekenRitprijs(afstandKm, duurMin, weer);
-        const routecomp = berekenRoutecompensatie(afstandKm);
 
-        const totaal = ritprijs + routecomp;
-        const resultText = `🚖 Ritprijs: €${totaal.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\nWeer: ${weer || 'Onbekend'}\n\n📌 Annuleringskosten: €10`;
+        const resultText = `🚖 Ritprijs: €${ritprijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\n\n📌 Annuleringskosten: €10 (niet inbegrepen)`;
 
         document.getElementById("resultaat").innerText = resultText;
         document.getElementById("boekKnop").style.display = "block";
@@ -219,8 +179,22 @@
 
       const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n\n${prijsInfo}`;
 
-      const whatsappUrl = `https://wa.me/31647972301?text=${encodeURIComponent(bericht)}`;
-      window.location.href = whatsappUrl;
+      try {
+        const response = await fetch('http://localhost:3000/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: bericht })
+        });
+
+        if (response.ok) {
+          alert("Bericht succesvol verzonden naar WhatsApp!");
+        } else {
+          alert("Er is een fout opgetreden.");
+        }
+      } catch (e) {
+        alert("Fout bij verzenden.");
+        console.error(e);
+      }
     }
   </script>
 </body>
