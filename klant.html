@@ -63,11 +63,18 @@
     <label for="afzetadres">📍 Afzetadres</label>
     <input type="text" id="afzetadres" placeholder="Bijv. Damrak 50, Amsterdam">
 
+    <label for="tijdstip">🕒 Gewenst tijdstip (optioneel)</label>
+    <input type="datetime-local" id="tijdstip">
+
     <button onclick="toggleSpoed()" id="spoedBtn">🚨 Voeg €10 spoedrit toe</button>
     <input type="checkbox" id="akkoord"> Ik ga akkoord met de annuleringskosten van €10,-
     <button onclick="berekenRit()">🚖 Bereken ritprijs</button>
+
     <div id="resultaat"></div>
-    <button id="boekKnop" onclick="boekRit()" style="display:none;">📩 Bevestig & Verstuur naar WhatsApp</button>
+
+    <a id="whatsappKnop" href="#" target="_blank" style="display:none;">
+      <button>📩 Bevestig & Verstuur naar WhatsApp</button>
+    </a>
   </div>
 
   <script>
@@ -145,6 +152,7 @@
     async function berekenRit() {
       const ophalen = document.getElementById("ophaaladres").value;
       const afzetten = document.getElementById("afzetadres").value;
+      const tijd = document.getElementById("tijdstip").value;
       if (!ophalen || !afzetten) return alert("Vul beide adressen in.");
       if (!document.getElementById("akkoord").checked) return alert("Ga akkoord met de annuleringskosten.");
 
@@ -163,37 +171,18 @@
         const ritprijs = berekenRitprijs(afstandKm, duurMin, weer);
 
         const resultText = `🚖 Ritprijs: €${ritprijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\n\n📌 Annuleringskosten: €10 (niet inbegrepen)`;
-
         document.getElementById("resultaat").innerText = resultText;
-        document.getElementById("boekKnop").style.display = "block";
+
+        const tijdInfo = tijd ? `🕒 Gewenst tijdstip: ${tijd}` : "";
+        const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n${tijdInfo}\n\n${resultText}`;
+
+        const whatsappURL = `https://wa.me/?text=${encodeURIComponent(bericht)}`;
+        const link = document.getElementById("whatsappKnop");
+        link.href = whatsappURL;
+        link.style.display = "block";
       } catch (e) {
         console.error(e);
         alert("Er ging iets mis bij het berekenen van de rit.");
-      }
-    }
-
-    async function boekRit() {
-      const ophalen = document.getElementById("ophaaladres").value;
-      const afzetten = document.getElementById("afzetadres").value;
-      const prijsInfo = document.getElementById("resultaat").innerText;
-
-      const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n\n${prijsInfo}`;
-
-      try {
-        const response = await fetch('http://localhost:3000/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: bericht })
-        });
-
-        if (response.ok) {
-          alert("Bericht succesvol verzonden naar WhatsApp!");
-        } else {
-          alert("Er is een fout opgetreden.");
-        }
-      } catch (e) {
-        alert("Fout bij verzenden.");
-        console.error(e);
       }
     }
   </script>
