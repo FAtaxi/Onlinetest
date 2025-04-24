@@ -1,4 +1,4 @@
-/* Standaard achtergrondinstellingen */
+/* Algemene bodyinstellingen */
 body {
     background-image: url('taxiplaatje.png');
     background-size: cover;  /* Zorgt ervoor dat het volledig de achtergrond vult */
@@ -6,12 +6,11 @@ body {
     background-repeat: no-repeat;  /* Voorkomt dat de afbeelding wordt herhaald */
     margin: 0;
     font-family: Arial, sans-serif;
-    height: 100vh;
+    height: 100vh; /* Gebruik de volledige hoogte van het scherm */
+    overflow: hidden; /* Zorgt ervoor dat niets uit de viewport wordt gescrold */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* De 16:9 verhouding voor de achtergrond */
-    aspect-ratio: 16/9;
 }
 
 /* Bedrijfsnaam en 24/7 Service boven gecentreerd */
