@@ -1,6 +1,6 @@
 /* Algemene bodyinstellingen */
 body {
-    background-image: url('https://fataxi.github.io/Onlinetest/taxiplaatje.png');
+    background-image: url('https://fataxi.github.io/Onlinetest/taxiplaatje.png'); /* Achtergrondafbeelding */
     background-position: center center;  /* Zorgt ervoor dat de achtergrond gecentreerd is */
     background-repeat: no-repeat;  /* Zorgt ervoor dat de afbeelding niet herhaald wordt */
     background-size: cover;  /* Zorgt ervoor dat de achtergrond het volledige scherm vult */
@@ -30,19 +30,6 @@ header .header-text h1 {
 header .header-text p {
     font-size: 1.5em;
     margin: 0;
-}
-
-/* Taxi afbeelding gecentreerd in de container */
-.taxi-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 10%;
-}
-
-.taxi-image {
-    width: 60%;  /* Zorg ervoor dat het plaatje goed zichtbaar is, maar niet te groot */
-    max-width: 600px;
-    height: auto;
 }
 
 /* Boekingsknop gecentreerd net onder taxi-afbeelding */
