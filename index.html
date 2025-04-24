@@ -16,6 +16,7 @@
       align-items: center;
       height: 100vh;
       flex-direction: column;
+      overflow: hidden;
     }
 
     h1 {
@@ -62,6 +63,49 @@
     .container {
       text-align: center;
     }
+
+    .taxi {
+      position: absolute;
+      bottom: 10px;
+      left: -150px;
+      width: 150px;
+      animation: moveTaxi 10s linear infinite;
+    }
+
+    .exhaust {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background: gray;
+      border-radius: 50%;
+      opacity: 0;
+      animation: exhaustGas 0.5s ease-in-out infinite;
+    }
+
+    @keyframes moveTaxi {
+      0% {
+        left: -150px;
+      }
+      50% {
+        left: 50%;
+      }
+      100% {
+        left: 100%;
+      }
+    }
+
+    @keyframes exhaustGas {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+    }
   </style>
 </head>
 <body>
@@ -71,6 +115,11 @@
     <h1>FA Taxi Service</h1>
 
     <a href="https://fataxi.github.io/FA-Werk/taxi.html" class="btn">Rit Boeken</a>
+  </div>
+
+  <div class="taxi">
+    <img src="https://fataxi.github.io/FA-Werk/taxi-image.png" alt="Taxi" />
+    <div class="exhaust"></div>
   </div>
 
 </body>
