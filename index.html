@@ -4,28 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FA Taxi Service</title>
-  <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="firebase-functions.js"></script>
-</head>
-<body>
-  <h1>FA Taxi Service - Registratie</h1>
 
-  <!-- Gebruikersregistratie formulier -->
-  <h2>Registreren als chauffeur</h2>
-  <form id="registerForm">
-    <input type="email" id="email" placeholder="E-mail" required><br>
-    <input type="password" id="password" placeholder="Wachtwoord" required><br>
-    <button type="submit">Registreren</button>
-  </form>
+  <!-- Voeg Firebase SDK's toe via CDN -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  
+  <script type="module">
+    // Firebase-configuratie
+    const firebaseConfig = {
+      apiKey: "AIzaSyBjFUbm21-liv94pgMf9W0a1LHC7mpdN1E",
+      authDomain: "taxi-calculator-452223.firebaseapp.com",
+      projectId: "taxi-calculator-452223",
+      storageBucket: "taxi-calculator-452223.firebasestorage.app",
+      messagingSenderId: "560317385944",
+      appId: "1:560317385944:web:bc0e369d7593792065dbad",
+      measurementId: "G-THG64RYL7K"
+    };
 
-  <h2>Chauffeur Gegevens Toevoegen</h2>
-  <form id="chauffeurForm">
-    <input type="text" id="chauffeurName" placeholder="Naam chauffeur" required><br>
-    <input type="file" id="chauffeurImage" required><br>
-    <button type="submit">Voeg chauffeur toe</button>
-  </form>
+    // Initialiseer Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    const auth = firebase.auth();
 
-  <script>
+    // Functie voor het toevoegen van een chauffeur aan Firestore
+    async function addChauffeur(chauffeurData) {
+      try {
+        const docRef = await db.collection("chauffeurs").add(chauffeurData);
+        console.log("Chauffeur toegevoegd met ID:", docRef.id);
+      } catch (e) {
+        console.error("Fout bij het toevoegen van chauffeur:", e);
+      }
+    }
+
+    // Functie voor het uploaden van een afbeelding naar Firebase Storage
+    async function uploadFile(file) {
+      const fileRef = storage.ref('chauffeur-afbeeldingen/' + file.name);
+      try {
+        await fileRef.put(file);
+        console.log("Bestand succesvol geüpload!");
+      } catch (e) {
+        console.error("Fout bij het uploaden van bestand:", e);
+      }
+    }
+
+    // Functie voor het registreren van een gebruiker (chauffeur)
+    async function registerUser(email, password) {
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        console.log("Gebruiker geregistreerd:", userCredential.user);
+      } catch (e) {
+        console.error("Fout bij het registreren van gebruiker:", e);
+      }
+    }
+
     // Gebruiker registreren bij het indienen van het formulier
     document.getElementById("registerForm").addEventListener("submit", function (e) {
       e.preventDefault();
@@ -50,5 +84,23 @@
       }
     });
   </script>
+</head>
+<body>
+  <h1>FA Taxi Service - Registratie</h1>
+
+  <!-- Gebruikersregistratie formulier -->
+  <h2>Registreren als chauffeur</h2>
+  <form id="registerForm">
+    <input type="email" id="email" placeholder="E-mail" required><br>
+    <input type="password" id="password" placeholder="Wachtwoord" required><br>
+    <button type="submit">Registreren</button>
+  </form>
+
+  <h2>Chauffeur Gegevens Toevoegen</h2>
+  <form id="chauffeurForm">
+    <input type="text" id="chauffeurName" placeholder="Naam chauffeur" required><br>
+    <input type="file" id="chauffeurImage" required><br>
+    <button type="submit">Voeg chauffeur toe</button>
+  </form>
 </body>
 </html>
