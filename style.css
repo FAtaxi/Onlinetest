@@ -10,6 +10,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    /* De 16:9 verhouding voor de achtergrond */
+    aspect-ratio: 16/9;
 }
 
 /* Bedrijfsnaam en 24/7 Service boven gecentreerd */
@@ -17,7 +19,7 @@ header .header-text {
     text-align: center;
     color: red;
     position: absolute;
-    top: 20%;
+    top: 10%;
     width: 100%;
 }
 
@@ -35,7 +37,7 @@ header .header-text p {
 .taxi-container {
     display: flex;
     justify-content: center;
-    margin-top: 15%;
+    margin-top: 10%;
 }
 
 .taxi-image {
