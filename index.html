@@ -4,105 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FA Taxi Service</title>
-  
   <style>
-    /* Stijlen zoals eerder */
-
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
     }
 
-    .background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('achtergrond.jpg') no-repeat center center fixed;
-      background-size: cover;
-      z-index: -1;
+    h1 {
+      font-size: 3rem;
+      color: red;
+      margin-bottom: 1rem;
+      text-align: center;
+      text-shadow: 2px 2px 4px #000000;
     }
 
-    .welcome-text {
-      position: absolute;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -30%);
-      color: #FFD700;
-      font-size: 3em;
-      font-weight: bold;
-      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-    }
-
-    .start-button {
-      display: block;
-      margin: 30px auto;
+    .btn {
+      background-color: gold;
+      color: black;
       padding: 15px 30px;
-      font-size: 1.5em;
-      background-color: #FFD700;
-      color: #000;
-      text-decoration: none;
+      font-size: 1.2rem;
+      margin: 10px;
+      border: none;
       border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
       text-align: center;
     }
 
-    .start-button:hover {
-      background-color: #FFA500;
+    .btn:hover {
+      background-color: #e1b800;
     }
 
-    /* Kleine beheerdersknop */
-    .admin-button {
+    .admin-btn {
+      font-size: 0.8rem;
       position: absolute;
-      bottom: 20px;
+      top: 20px;
       right: 20px;
-      padding: 8px 15px;
-      font-size: 1em;
-      background-color: #333;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      text-align: center;
-    }
-
-    .admin-button:hover {
       background-color: #555;
+      padding: 8px 15px;
+      text-decoration: none;
+      color: white;
+      border-radius: 3px;
     }
 
-    .car-animation {
-      position: absolute;
-      bottom: 0;
-      left: -200px;
-      animation: driveCar 10s infinite linear;
+    .admin-btn:hover {
+      background-color: #444;
     }
 
-    @keyframes driveCar {
-      0% {
-        left: -200px;
-      }
-      50% {
-        left: 100%;
-      }
-      100% {
-        left: -200px;
-      }
+    .container {
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <div class="background"></div>
+  <a href="/admin" class="admin-btn">Beheerder Inloggen</a>
+  <div class="container">
+    <h1>FA Taxi Service</h1>
 
-  <div class="welcome-text">Welkom bij FA Taxi Service!</div>
-
-  <a href="boekingen.html" class="start-button">Boek nu je rit</a>
-
-  <!-- Kleine Beheerdersknop -->
-  <a href="beheerderspagina.html" class="admin-button">Beheerderspagina</a>
-
-  <img src="taxi-rijdend.png" alt="Rijdende taxi" class="car-animation">
+    <a href="https://fataxi.github.io/FA-Werk/taxi.html" class="btn">Rit Boeken</a>
+  </div>
 
 </body>
 </html>
