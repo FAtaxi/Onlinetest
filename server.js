@@ -1,57 +1,44 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const twilio = require('twilio');
-
+const express = require("express");
 const app = express();
-app.use(bodyParser.json());
+const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 
-// Configure CORS
-const corsOptions = {
-  origin: 'https://fataxi.github.io', // Vervang door je front-end domein
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
-  exposedHeaders: ['Access-Control-Allow-Private-Network'],
-};
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public")); // Hier staat je HTML-bestand
 
-app.use(cors(corsOptions));
+// Boekingsdata opslaan of verwerken
+app.post("/boek-rit", (req, res) => {
+  const data = req.body;
 
-// Twilio configuratie
-const accountSid = 'AC62065d08cb81f65011732cf3a80694f5'; // Vervang door je Twilio Account SID
-const authToken = 'f8b5284f7b1f9dff52c6eec96476f0f8'; // Vervang door je Twilio Auth Token
-const client = twilio(accountSid, authToken);
-
-const fromWhatsAppNumber = 'whatsapp:+14155238886'; // Twilio WhatsApp nummer
-
-app.get('/', (req, res) => {
-  res.send('Welkom bij de Twilio API server! Stuur een POST-verzoek naar /send om een bericht te verzenden.');
-});
-
-app.post('/send', async (req, res) => {
-  const { message, toWhatsAppNumber } = req.body; // Nu kun je ook een nummer vanuit de request krijgen
-
-  // Verifieer of het bericht en het nummer zijn meegegeven
-  if (!message || !toWhatsAppNumber) {
-    return res.status(400).json({ success: false, error: 'Bericht en/of nummer wordt niet meegegeven' });
+  if (!data.ophaaladres || !data.afzetadres || !data.betaalmethode || !data.ritprijs) {
+    return res.status(400).json({ error: "Onvolledige gegevens ontvangen." });
   }
 
-  try {
-    const msg = await client.messages.create({
-      from: fromWhatsAppNumber,
-      to: toWhatsAppNumber, // Gebruik het nummer dat is meegegeven in de body
-      body: message,
-    });
+  // Log naar console en optioneel opslaan in JSON bestand
+  console.log("📥 Nieuwe boeking ontvangen:");
+  console.log(data);
 
-    res.setHeader('Access-Control-Allow-Private-Network', 'true'); // Voeg de header toe
-    res.status(200).json({ success: true, sid: msg.sid });
-  } catch (err) {
-    console.error('Fout bij het verzenden via Twilio:', err.message);
-    res.status(500).json({ success: false, error: err.message });
+  const boeking = {
+    tijd: new Date().toISOString(),
+    ...data
+  };
+
+  const filePath = path.join(__dirname, "boekingen.json");
+  let bestaandeBoekingen = [];
+
+  if (fs.existsSync(filePath)) {
+    bestaandeBoekingen = JSON.parse(fs.readFileSync(filePath));
   }
+
+  bestaandeBoekingen.push(boeking);
+  fs.writeFileSync(filePath, JSON.stringify(bestaandeBoekingen, null, 2));
+
+  res.json({ message: "Boeking succesvol opgeslagen!" });
 });
 
-// Start de server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server draait op http://localhost:${PORT}`);
+  console.log(`🚀 Server gestart op http://localhost:${PORT}`);
 });
