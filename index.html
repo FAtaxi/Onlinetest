@@ -1,135 +1,36 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FA Taxi Service</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: url('achtergrond.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
-
-    h1 {
-      font-size: 3rem;
-      color: gold;
-      margin-bottom: 2rem;
-      text-align: center;
-      text-shadow: 2px 2px 4px #000000;
-    }
-
-    .btn {
-      background-color: gold;
-      color: black;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      margin: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      transition: background-color 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #e1b800;
-    }
-
-    .admin-btn {
-      font-size: 0.8rem;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #555;
-      padding: 8px 15px;
-      text-decoration: none;
-      color: white;
-      border-radius: 3px;
-    }
-
-    .admin-btn:hover {
-      background-color: #444;
-    }
-
-    .container {
-      text-align: center;
-    }
-
-    .taxi {
-      position: absolute;
-      bottom: 10px;
-      left: -200px;
-      width: 180px;
-      animation: moveTaxi 10s linear infinite;
-    }
-
-    .exhaust {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      width: 10px;
-      height: 10px;
-      background: gray;
-      border-radius: 50%;
-      opacity: 0;
-      animation: exhaustGas 0.5s ease-in-out infinite;
-    }
-
-    @keyframes moveTaxi {
-      0% {
-        left: -200px;
-      }
-      50% {
-        left: 50%;
-      }
-      100% {
-        left: 100vw;
-      }
-    }
-
-    @keyframes exhaustGas {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-    }
-
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FA Taxi Service</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Welkomstpagina header -->
+    <header>
+        <h1>FA Taxi Service</h1>
+    </header>
 
-  <!-- Beheerder Inloggen knop -->
-  <a href="/admin" class="admin-btn">Beheerder Inloggen</a>
+    <!-- Rijdende taxi met effecten -->
+    <div class="taxi-container">
+        <img src="taxi.gif" alt="Rijdende taxi" class="taxi-animation">
+    </div>
 
-  <div class="container">
-    <!-- Welkomsttekst -->
-    <h1>FA Taxi Service</h1>
+    <!-- Navigatieknoppen -->
+    <nav>
+        <ul>
+            <li><a href="https://fataxi.github.io/FA-Werk/klant.html" target="_blank" class="btn">Boek een rit</a></li>
+        </ul>
+    </nav>
 
-    <!-- Boek een rit knop -->
-    <a href="https://fataxi.github.io/FA-Werk/klant.html" class="btn">Boek een rit</a>
-  </div>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 FA Taxi Service</p>
+    </footer>
 
-  <!-- Rijdende taxi afbeelding met animatie -->
-  <div class="taxi">
-    <img src="taxi-afbeelding.png" alt="Taxi" />
-    <div class="exhaust"></div>
-  </div>
-
+    <script>
+        // Eventuele extra scripts voor je animatie of functionaliteiten
+    </script>
 </body>
 </html>
