@@ -150,7 +150,16 @@
       else basis = 2.5 + (afstand * 1.5) + (duur * 0.50);
 
       let toeslag = 1;
-      if (weer.toLowerCase().includes("rain") || weer.toLowerCase().includes("regen")) toeslag *= 1.2;
+
+      // Weersomstandigheden toeslagen
+      if (weer.toLowerCase().includes("patchy rain")) toeslag *= 1.05; // 5% toeslag bij patchy rain
+      else if (weer.toLowerCase().includes("light rain")) toeslag *= 1.10; // 10% toeslag bij lichte regen
+      else if (weer.toLowerCase().includes("moderate rain")) toeslag *= 1.15; // 15% toeslag bij matige regen
+      else if (weer.toLowerCase().includes("heavy rain")) toeslag *= 1.20; // 20% toeslag bij zware regen
+      else if (weer.toLowerCase().includes("torrential rain")) toeslag *= 1.25; // 25% toeslag bij extreme regen
+      else if (weer.toLowerCase().includes("thunderstorm")) toeslag *= 1.25; // 25% toeslag bij onweer
+      else if (weer.toLowerCase().includes("snow")) toeslag *= 1.25; // 25% toeslag bij sneeuw
+
       toeslag *= bepaalDrukteToeslag();
       toeslag *= bepaalNachttoeslag();
 
