@@ -1,16 +1,16 @@
 /* Algemene bodyinstellingen */
 body {
     background-image: url('taxiplaatje.png');
-    background-size: cover;  /* Zorgt ervoor dat het volledig de achtergrond vult */
-    background-position: center center;  /* Zorgt ervoor dat het goed gecentreerd is */
-    background-repeat: no-repeat;  /* Voorkomt dat de afbeelding wordt herhaald */
+    background-size: cover;  /* Zorgt ervoor dat de achtergrond het volledige scherm vult */
+    background-position: center center;  /* Zorgt ervoor dat de achtergrond in het midden wordt weergegeven */
+    background-repeat: no-repeat;  /* Zorgt ervoor dat de afbeelding niet herhaald wordt */
     margin: 0;
     font-family: Arial, sans-serif;
-    height: 100vh; /* Gebruik de volledige hoogte van het scherm */
-    overflow: hidden; /* Zorgt ervoor dat niets uit de viewport wordt gescrold */
+    height: 100vh; /* Zorgt ervoor dat de hoogte van de pagina gelijk is aan het scherm */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center; /* Zorgt ervoor dat de inhoud gecentreerd is */
+    align-items: center;
 }
 
 /* Bedrijfsnaam en 24/7 Service boven gecentreerd */
