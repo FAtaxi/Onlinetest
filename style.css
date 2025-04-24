@@ -3,15 +3,16 @@ body {
     background-image: url('https://fataxi.github.io/Onlinetest/taxiplaatje.png'); /* Achtergrondafbeelding */
     background-position: center center;  /* Zorgt ervoor dat de achtergrond gecentreerd is */
     background-repeat: no-repeat;  /* Zorgt ervoor dat de afbeelding niet herhaald wordt */
-    background-size: contain;  /* Zorgt ervoor dat de achtergrondafbeelding de gehele pagina vult zonder vervorming */
+    background-size: cover;  /* Zorgt ervoor dat de achtergrond de volledige ruimte vult */
     margin: 0;
-    padding: 0;  /* Verwijder padding */
+    padding: 0;  /* Verwijder padding om lege ruimte te voorkomen */
     font-family: Arial, sans-serif;
     height: 100vh;  /* Zorgt ervoor dat de hoogte van de pagina gelijk is aan het scherm */
     display: flex;
     flex-direction: column;
     justify-content: center;  /* Zorgt ervoor dat de inhoud verticaal gecentreerd is */
     align-items: center;  /* Zorgt ervoor dat de inhoud horizontaal gecentreerd is */
+    overflow: hidden;  /* Voorkom dat er ongewenste scrollbalken verschijnen */
 }
 
 /* Bedrijfsnaam en 24/7 Service boven gecentreerd */
