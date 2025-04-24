@@ -1,16 +1,16 @@
 /* Algemene bodyinstellingen */
 body {
-    background-image: url('taxiplaatje.png');
-    background-size: cover;  /* Zorgt ervoor dat de achtergrond het volledige scherm vult */
-    background-position: center center;  /* Zorgt ervoor dat de achtergrond in het midden wordt weergegeven */
+    background-image: url('https://fataxi.github.io/Onlinetest/taxiplaatje.png');
+    background-position: center center;  /* Zorgt ervoor dat de achtergrond gecentreerd is */
     background-repeat: no-repeat;  /* Zorgt ervoor dat de afbeelding niet herhaald wordt */
+    background-size: cover;  /* Zorgt ervoor dat de achtergrond het volledige scherm vult */
     margin: 0;
     font-family: Arial, sans-serif;
-    height: 100vh; /* Zorgt ervoor dat de hoogte van de pagina gelijk is aan het scherm */
+    height: 100vh;  /* Zorgt ervoor dat de hoogte van de pagina gelijk is aan het scherm */
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Zorgt ervoor dat de inhoud gecentreerd is */
-    align-items: center;
+    justify-content: center;  /* Zorgt ervoor dat de inhoud verticaal gecentreerd is */
+    align-items: center;  /* Zorgt ervoor dat de inhoud horizontaal gecentreerd is */
 }
 
 /* Bedrijfsnaam en 24/7 Service boven gecentreerd */
@@ -40,7 +40,7 @@ header .header-text p {
 }
 
 .taxi-image {
-    width: 60%; /* Zorg ervoor dat het plaatje goed zichtbaar is, maar niet te groot */
+    width: 60%;  /* Zorg ervoor dat het plaatje goed zichtbaar is, maar niet te groot */
     max-width: 600px;
     height: auto;
 }
@@ -48,7 +48,7 @@ header .header-text p {
 /* Boekingsknop gecentreerd net onder taxi-afbeelding */
 .book-now {
     text-align: center;
-    margin-top: 10%; /* Maak wat ruimte tussen de afbeelding en de knop */
+    margin-top: 10%;  /* Maak wat ruimte tussen de afbeelding en de knop */
 }
 
 .book-now .btn {
