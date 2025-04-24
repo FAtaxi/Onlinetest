@@ -11,19 +11,20 @@
       background: url('achtergrond.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
-      padding: 1rem;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
 
     h1 {
       font-size: 3rem;
-      color: red;
-      margin-bottom: 1rem;
+      color: gold;
+      margin-bottom: 2rem;
       text-align: center;
       text-shadow: 2px 2px 4px #000000;
     }
@@ -39,6 +40,7 @@
       cursor: pointer;
       text-decoration: none;
       text-align: center;
+      transition: background-color 0.3s;
     }
 
     .btn:hover {
@@ -68,8 +70,8 @@
     .taxi {
       position: absolute;
       bottom: 10px;
-      left: -150px;
-      width: 150px;
+      left: -200px;
+      width: 180px;
       animation: moveTaxi 10s linear infinite;
     }
 
@@ -87,13 +89,13 @@
 
     @keyframes moveTaxi {
       0% {
-        left: -150px;
+        left: -200px;
       }
       50% {
         left: 50%;
       }
       100% {
-        left: 100%;
+        left: 100vw;
       }
     }
 
@@ -107,19 +109,25 @@
         transform: translateY(-30px);
       }
     }
+
   </style>
 </head>
 <body>
 
+  <!-- Beheerder Inloggen knop -->
   <a href="/admin" class="admin-btn">Beheerder Inloggen</a>
+
   <div class="container">
+    <!-- Welkomsttekst -->
     <h1>FA Taxi Service</h1>
 
+    <!-- Boek een rit knop -->
     <a href="https://fataxi.github.io/FA-Werk/klant.html" class="btn">Boek een rit</a>
   </div>
 
+  <!-- Rijdende taxi afbeelding met animatie -->
   <div class="taxi">
-    <img src="https://fataxi.github.io/FA-Werk/taxi-image.png" alt="Taxi" />
+    <img src="taxi-afbeelding.png" alt="Taxi" />
     <div class="exhaust"></div>
   </div>
 
