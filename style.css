@@ -1,12 +1,22 @@
 /* Algemene bodyinstellingen */
 body {
+    --center-abs-margin: 180px;
+    --center-width: 652px;
+    --rhs-margin: 76px;
+    --rhs-width: 372px;
+    --lhs-refinements-width: 0px;
+    --lhs-margin: 24px;
+    --lhs-width: calc(var(--center-abs-margin) - var(--lhs-margin) - var(--center-margin));
+    --center-margin: 24px;
+    
+    position: relative;
+    min-height: 100vh;  /* Zorgt ervoor dat de hoogte van de pagina gelijk is aan het scherm */
     background-image: url('https://fataxi.github.io/Onlinetest/taxiplaatje.png'); /* Achtergrondafbeelding */
     background-position: center center;  /* Zorgt ervoor dat de achtergrond gecentreerd is */
     background-repeat: no-repeat;  /* Zorgt ervoor dat de afbeelding niet herhaald wordt */
     background-size: cover;  /* Zorgt ervoor dat de achtergrond het volledige scherm vult zonder vervorming */
-    margin: 0;
     font-family: Arial, sans-serif;
-    height: 100vh;  /* Zorgt ervoor dat de hoogte van de pagina gelijk is aan het scherm */
+    margin: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;  /* Zorgt ervoor dat de inhoud verticaal gecentreerd is */
@@ -52,4 +62,51 @@ header .header-text p {
     background-color: #e6b800;  /* Verdund goudkleurig effect bij hover */
 }
 
-/* Footer in de rechteronderhoek*
+/* Footer in de rechteronderhoek */
+footer {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    text-align: right;
+    color: white;
+    font-size: 1em;
+}
+
+/* Specifieke secties met gebruik van variabelen */
+.center-section {
+    width: var(--center-width);
+    margin: 0 auto;
+    position: relative;
+}
+
+.lhs-section {
+    width: var(--lhs-width);
+    margin-left: var(--lhs-margin);
+    position: absolute;
+    left: 0;
+}
+
+.rhs-section {
+    width: var(--rhs-width);
+    margin-right: var(--rhs-margin);
+    position: absolute;
+    right: 0;
+}
+
+/* Responsief ontwerp voor mobiele apparaten */
+@media (max-width: 768px) {
+    body {
+        background-size: contain;
+    }
+    
+    .center-section {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .lhs-section, .rhs-section {
+        width: 100%;
+        position: relative;
+        margin: 0;
+    }
+}
