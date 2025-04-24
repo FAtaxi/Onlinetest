@@ -4,103 +4,105 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FA Taxi Service</title>
-
-  <!-- Voeg Firebase SDK's toe via CDN -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
   
-  <script type="module">
-    // Firebase-configuratie
-    const firebaseConfig = {
-      apiKey: "AIzaSyBjFUbm21-liv94pgMf9W0a1LHC7mpdN1E",
-      authDomain: "taxi-calculator-452223.firebaseapp.com",
-      projectId: "taxi-calculator-452223",
-      storageBucket: "taxi-calculator-452223.firebasestorage.app",
-      messagingSenderId: "560317385944",
-      appId: "1:560317385944:web:bc0e369d7593792065dbad",
-      measurementId: "G-THG64RYL7K"
-    };
+  <style>
+    /* Stijlen zoals eerder */
 
-    // Initialiseer Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-    const auth = firebase.auth();
-
-    // Functie voor het toevoegen van een chauffeur aan Firestore
-    async function addChauffeur(chauffeurData) {
-      try {
-        const docRef = await db.collection("chauffeurs").add(chauffeurData);
-        console.log("Chauffeur toegevoegd met ID:", docRef.id);
-      } catch (e) {
-        console.error("Fout bij het toevoegen van chauffeur:", e);
-      }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
 
-    // Functie voor het uploaden van een afbeelding naar Firebase Storage
-    async function uploadFile(file) {
-      const fileRef = storage.ref('chauffeur-afbeeldingen/' + file.name);
-      try {
-        await fileRef.put(file);
-        console.log("Bestand succesvol geüpload!");
-      } catch (e) {
-        console.error("Fout bij het uploaden van bestand:", e);
-      }
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('achtergrond.jpg') no-repeat center center fixed;
+      background-size: cover;
+      z-index: -1;
     }
 
-    // Functie voor het registreren van een gebruiker (chauffeur)
-    async function registerUser(email, password) {
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        console.log("Gebruiker geregistreerd:", userCredential.user);
-      } catch (e) {
-        console.error("Fout bij het registreren van gebruiker:", e);
-      }
+    .welcome-text {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      color: #FFD700;
+      font-size: 3em;
+      font-weight: bold;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
     }
 
-    // Gebruiker registreren bij het indienen van het formulier
-    document.getElementById("registerForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      registerUser(email, password);
-    });
+    .start-button {
+      display: block;
+      margin: 30px auto;
+      padding: 15px 30px;
+      font-size: 1.5em;
+      background-color: #FFD700;
+      color: #000;
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+    }
 
-    // Chauffeur toevoegen bij het indienen van het formulier
-    document.getElementById("chauffeurForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const chauffeurName = document.getElementById("chauffeurName").value;
-      const chauffeurImage = document.getElementById("chauffeurImage").files[0];
-      const chauffeurData = { name: chauffeurName };
-      
-      // Chauffeurgegevens toevoegen aan Firestore
-      addChauffeur(chauffeurData);
-      
-      // Afbeelding uploaden naar Firebase Storage
-      if (chauffeurImage) {
-        uploadFile(chauffeurImage);
+    .start-button:hover {
+      background-color: #FFA500;
+    }
+
+    /* Kleine beheerdersknop */
+    .admin-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 8px 15px;
+      font-size: 1em;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .admin-button:hover {
+      background-color: #555;
+    }
+
+    .car-animation {
+      position: absolute;
+      bottom: 0;
+      left: -200px;
+      animation: driveCar 10s infinite linear;
+    }
+
+    @keyframes driveCar {
+      0% {
+        left: -200px;
       }
-    });
-  </script>
+      50% {
+        left: 100%;
+      }
+      100% {
+        left: -200px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>FA Taxi Service - Registratie</h1>
 
-  <!-- Gebruikersregistratie formulier -->
-  <h2>Registreren als chauffeur</h2>
-  <form id="registerForm">
-    <input type="email" id="email" placeholder="E-mail" required><br>
-    <input type="password" id="password" placeholder="Wachtwoord" required><br>
-    <button type="submit">Registreren</button>
-  </form>
+  <div class="background"></div>
 
-  <h2>Chauffeur Gegevens Toevoegen</h2>
-  <form id="chauffeurForm">
-    <input type="text" id="chauffeurName" placeholder="Naam chauffeur" required><br>
-    <input type="file" id="chauffeurImage" required><br>
-    <button type="submit">Voeg chauffeur toe</button>
-  </form>
+  <div class="welcome-text">Welkom bij FA Taxi Service!</div>
+
+  <a href="boekingen.html" class="start-button">Boek nu je rit</a>
+
+  <!-- Kleine Beheerdersknop -->
+  <a href="beheerderspagina.html" class="admin-button">Beheerderspagina</a>
+
+  <img src="taxi-rijdend.png" alt="Rijdende taxi" class="car-animation">
+
 </body>
 </html>
