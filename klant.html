@@ -1,13 +1,13 @@
 <!DOCTYPE  html> 
-<html  lang="nl"> 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FA Taxi Boeking</title>
-  < stijl> 
-    lichaam  {
-      marge:  0; 
-      lettertypefamilie: 'Segoe UI', sans-serif;
+<html lang="nl"> 
+<head> 
+  <meta-  tekenset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1 .0"> 
+  <title>FA  Taxi  Boeking</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background: #000;
       color: #fff;
       padding: 1rem;
@@ -76,7 +76,7 @@
 
     <label for="kortingscode">🎟️ Kortingscode (optioneel)</label>
     <input type="text" id="kortingscode" placeholder="Voer uw kortingscode in">
-
+    
     <button onclick="toggleSpoed()" id="spoedBtn">🚨 Voeg €10 spoedrit toe</button>
     <input type="checkbox" id="akkoord"> Ik ga akkoord met de annuleringskosten van €10,-
     <button onclick="berekenRit()">🚖 Bereken ritprijs</button>
@@ -96,7 +96,7 @@
       spoedToeslag = spoedToeslag === 0 ? 10 : 0;
       document.getElementById('spoedBtn').innerText = spoedToeslag === 0 ? "🚨 Voeg €10 spoedrit toe" : "✅ Spoedrit toegevoegd (€10)";
     }
-
+    
     async function gebruikLocatie() {
       if (!navigator.geolocation) return alert("Locatie niet ondersteund.");
       navigator.geolocation.getCurrentPosition(async pos => {
@@ -174,10 +174,14 @@
       let kortingPercentage = 0;
 
       // Controle op kortingscodes
-      if (kortingscode === "FATS20") {
-        kortingPercentage = 20;
+      if (kortingscode === "KORTING10") {
+        kortingPercentage = 10; // 10% korting
+      } else if (kortingscode === "FATS20") {
+        kortingPercentage = 20; // 20% korting
       } else if (kortingscode === "FATS25") {
-        kortingPercentage = 25;
+        kortingPercentage = 25; // 25% korting
+      } else if (kortingscode === "FATS30") {
+        kortingPercentage = 30; // 30% korting
       }
 
       return ritprijs * (1 - kortingPercentage / 100);
@@ -225,15 +229,3 @@
   </script>
 </body>
 </html>
-    }
-    
-    }
-    
-    }
-    
-    }
-    
-    }
-    
-    }
-    
