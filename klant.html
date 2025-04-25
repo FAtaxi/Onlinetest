@@ -138,32 +138,32 @@
       return (u >= 23 || u < 7) ? 1.5 : 1;
     }
 
-    function berekenRitprijs(afstand, duur, weer) {
-      let basis = 0;
-      if (afstand <= 3) basis = 12;
-      else if (afstand <= 4) basis = 13.5;
-      else if (afstand <= 5) basis = 15;
-      else if (afstand <= 6) basis = 17.5;
-      else if (afstand <= 7) basis = 19;
-      else if (afstand <= 8) basis = 21.5;
-      else if (afstand <= 9) basis = 23.5;
-      else basis = 2.5 + (afstand * 1.5) + (duur * 0.50);
+    function berekenRitprijs(afstandKm, tijdMin, weer) {
+      let prijsZonderToeslag = 0;
+
+      if (afstandKm <= 3) prijsZonderToeslag = 10;
+      else if (afstandKm <= 4) prijsZonderToeslag = 12.5;
+      else if (afstandKm <= 5) prijsZonderToeslag = 14;
+      else if (afstandKm <= 6) prijsZonderToeslag = 16;
+      else if (afstandKm <= 7) prijsZonderToeslag = 18;
+      else if (afstandKm <= 8) prijsZonderToeslag = 20;
+      else if (afstandKm <= 9) prijsZonderToeslag = 25;
+      else prijsZonderToeslag = 2.5 + (afstandKm * 2) + (tijdMin * 0.5);
 
       let toeslag = 1;
 
-      // Weersomstandigheden toeslagen
-      if (weer.toLowerCase().includes("patchy rain")) toeslag *= 1.05; // 5% toeslag bij patchy rain
-      else if (weer.toLowerCase().includes("light rain")) toeslag *= 1.10; // 10% toeslag bij lichte regen
-      else if (weer.toLowerCase().includes("moderate rain")) toeslag *= 1.15; // 15% toeslag bij matige regen
-      else if (weer.toLowerCase().includes("heavy rain")) toeslag *= 1.20; // 20% toeslag bij zware regen
-      else if (weer.toLowerCase().includes("torrential rain")) toeslag *= 1.25; // 25% toeslag bij extreme regen
-      else if (weer.toLowerCase().includes("thunderstorm")) toeslag *= 1.25; // 25% toeslag bij onweer
-      else if (weer.toLowerCase().includes("snow")) toeslag *= 1.25; // 25% toeslag bij sneeuw
+      if (weer.toLowerCase().includes("patchy rain")) toeslag *= 1.05;
+      else if (weer.toLowerCase().includes("light rain")) toeslag *= 1.10;
+      else if (weer.toLowerCase().includes("moderate rain")) toeslag *= 1.15;
+      else if (weer.toLowerCase().includes("heavy rain")) toeslag *= 1.20;
+      else if (weer.toLowerCase().includes("torrential rain")) toeslag *= 1.25;
+      else if (weer.toLowerCase().includes("thunderstorm")) toeslag *= 1.25;
+      else if (weer.toLowerCase().includes("snow")) toeslag *= 1.25;
 
       toeslag *= bepaalDrukteToeslag();
       toeslag *= bepaalNachttoeslag();
 
-      return basis * toeslag + spoedToeslag;
+      return prijsZonderToeslag * toeslag + spoedToeslag;
     }
 
     async function berekenRit() {
@@ -195,7 +195,7 @@
         const tijdInfo = tijd ? `🕒 Gewenst tijdstip: ${tijd}` : "";
         const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n${tijdInfo}\n💳 Betaalmethode: ${betaalmethode}\n\n${resultText}`;
 
-        const whatsappURL = `https://wa.me/?text=${encodeURIComponent(bericht)}`;
+        const whatsappURL = `https://wa.me/3147972301?text=${encodeURIComponent(bericht)}`;
         const link = document.getElementById("whatsappKnop");
         link.href = whatsappURL;
         link.style.display = "block";
