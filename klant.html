@@ -131,14 +131,14 @@
     function bepaalDrukteToeslag() {
       const u = new Date().getHours();
       const d = new Date().getDay();
-      if ((u >= 7 && u <= 9) || (u >= 16 && u <= 18)) return 1.2;
+      if ((u >= 7 && u <= 9) || (u >= 16 && u <= 18)) return 1.15;
       if (d === 0 || d === 6) return 1.15;
       return 1;
     }
 
     function bepaalNachttoeslag() {
       const u = new Date().getHours();
-      return (u >= 23 || u < 7) ? 1.5 : 1;
+      return (u >= 23 || u < 7) ? 1.3 : 1;
     }
 
     function berekenRitprijs(afstand, duur, weer) {
