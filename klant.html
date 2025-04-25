@@ -1,6 +1,6 @@
- <!DOCTYPE html>
-<html lang="nl">
-<head>
+<!DOCTYPE  html>
+<html lang="nl"> 
+<hoofd>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FA Taxi Boeking</title>
@@ -98,7 +98,7 @@
       if (!navigator.geolocation) return alert("Locatie niet ondersteund.");
       navigator.geolocation.getCurrentPosition(async pos => {
         const lat = pos.coords.latitude, lon = pos.coords.longitude;
-        const url = https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=22f9046cc2b242a3a5f08cfabc005f78;
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=22f9046cc2b242a3a5f08cfabc005f78`;
         const res = await fetch(url);
         const data = await res.json();
         document.getElementById("ophaaladres").value = data.results[0].formatted;
@@ -106,7 +106,7 @@
     }
 
     async function getCoordinates(adres) {
-      const url = https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(adres)}&key=22f9046cc2b242a3a5f08cfabc005f78;
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(adres)}&key=22f9046cc2b242a3a5f08cfabc005f78`;
       const res = await fetch(url);
       const data = await res.json();
       if (data.results.length === 0) throw new Error("Geen locatie gevonden.");
@@ -116,7 +116,7 @@
 
     async function getWeer(lat, lon) {
       try {
-        const url = https://api.weatherapi.com/v1/current.json?key=${weatherApiKey}&q=${lat},${lon};
+        const url = `https://api.weatherapi.com/v1/current.json?key=${weatherApiKey}&q=${lat},${lon}`;
         const res = await fetch(url);
         const data = await res.json();
         return data.current?.condition?.text || "";
@@ -179,7 +179,7 @@
         const coordOphalen = await getCoordinates(ophalen);
         const coordAfzetten = await getCoordinates(afzetten);
 
-        const routeURL = https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248b59dc263cab24bdabda48748cd9122b3&start=${coordOphalen[0]},${coordOphalen[1]}&end=${coordAfzetten[0]},${coordAfzetten[1]};
+        const routeURL = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248b59dc263cab24bdabda48748cd9122b3&start=${coordOphalen[0]},${coordOphalen[1]}&end=${coordAfzetten[0]},${coordAfzetten[1]}`;
         const res = await fetch(routeURL);
         const data = await res.json();
 
@@ -189,13 +189,13 @@
 
         const ritprijs = berekenRitprijs(afstandKm, duurMin, weer);
 
-        const resultText = 🚖 Ritprijs: €${ritprijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\n💳 Betaalmethode: ${betaalmethode}\n\n📌 Annuleringskosten: €10 (niet inbegrepen);
+        const resultText = `🚖 Ritprijs: €${ritprijs.toFixed(2)}\nAfstand: ${afstandKm.toFixed(1)} km\nDuur: ${duurMin.toFixed(0)} min\n💳 Betaalmethode: ${betaalmethode}\n\n📌 Annuleringskosten: €10 (niet inbegrepen)`;
         document.getElementById("resultaat").innerText = resultText;
 
-        const tijdInfo = tijd ? 🕒 Gewenst tijdstip: ${tijd} : "";
-        const bericht = 📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n${tijdInfo}\n💳 Betaalmethode: ${betaalmethode}\n\n${resultText};
+        const tijdInfo = tijd ? `🕒 Gewenst tijdstip: ${tijd}` : "";
+        const bericht = `📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n${tijdInfo}\n💳 Betaalmethode: ${betaalmethode}\n\n${resultText}`;
 
-        const whatsappURL = https://wa.me/?text=${encodeURIComponent(bericht)};
+        const whatsappURL = `https://wa.me/?text=${encodeURIComponent(bericht)}`;
         const link = document.getElementById("whatsappKnop");
         link.href = whatsappURL;
         link.style.display = "block";
@@ -207,5 +207,3 @@
   </script>
 </body>
 </html>
-
-
