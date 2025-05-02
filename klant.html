@@ -1587,77 +1587,167 @@ button {
   </svg>
 </div>
 <!-- Hoekknoppen -->
-
-
-<div class="container">
   <label for="ophaaladres" id="labelOphaal">📍 OPHAAL ADRES 📍 </label>
   <div class="input-wrapper" style="position:relative; width:100%;">
-    <input type="text" id="ophaaladres" placeholder="Bijv. Stationsplein 1, Amsterdam" autocomplete="off" oninput="zoekAdresSuggesties(this, 'ophaaladres-suggesties')" aria-label="Ophaaladres" required />
-    <div id="ophaaladres-suggesties" class="adres-suggesties" style="position:absolute; top:100%; left:0; width:100%; right:auto;"></div>
-    <button onclick="gebruikLocatie()" id="locatieBtn" style="margin:0.5rem 0;">📍 Mijn locatie</button>
+    <input 
+      type="text" 
+      id="ophaaladres" 
+      placeholder="Bijv. Stationsplein 1, Amsterdam" 
+      autocomplete="off" 
+      oninput="zoekAdresSuggesties(this, 'ophaaladres-suggesties')" 
+      aria-label="Ophaaladres" 
+      required 
+    />
+    <div id="ophaaladres-suggesties" class="adres-suggesties" style="position:absolute; top:100%; left:0; width:100%; z-index:10;"></div>
+    <button type="button" onclick="gebruikLocatie()" id="locatieBtn">📍 Mijn locatie</button>
   </div>
+
   <label for="afzetadres" id="labelAfzet">📍 AFZET ADRES 📍</label>
   <div class="input-wrapper" style="position:relative; width:100%;">
-    <input type="text" id="afzetadres" placeholder="Bijv. Damrak 50, Amsterdam" autocomplete="off" oninput="zoekAdresSuggesties(this, 'afzetadres-suggesties')" aria-label="Afzetadres" required />
-    <div id="afzetadres-suggesties" class="adres-suggesties" style="position:absolute; top:100%; left:0; width:100%; right:auto;"></div>
+    <input 
+      type="text" 
+      id="afzetadres" 
+      placeholder="Bijv. Damrak 50, Amsterdam" 
+      autocomplete="off" 
+      oninput="zoekAdresSuggesties(this, 'afzetadres-suggesties')" 
+      aria-label="Afzetadres" 
+      required 
+    />
+    <div id="afzetadres-suggesties" class="adres-suggesties" style="position:absolute; top:100%; left:0; width:100%; z-index:10;"></div>
   </div>
 
-  <button onclick="toggleDatum()" id="toggleDatumBtn" aria-controls="datumContainer" aria-expanded="false">📅 Reserveren? €17.50,- 📅</button>
+  <button type="button" onclick="toggleDatum()" id="toggleDatumBtn" aria-controls="datumContainer" aria-expanded="false">📅 Reserveren? €17.50,- 📅</button>
 
   <div id="datumContainer">
-    <label for="tijdstip" id="labelTijdstip">🕒 Gewenst tijdstip 🕒 </label>
+    <label for="tijdstip" id="labelTijdstip">🕒 Gewenst tijdstip 🕒</label>
     <input type="datetime-local" id="tijdstip" aria-label="Gewenst tijdstip" />
   </div>
 
   <label for="betaalmethode" id="labelBetaal">💳 Kies een betaalmethode 💳</label>
   <select id="betaalmethode" aria-label="Betaalmethode" required>
-    <option value="Online betaallink">🌐 IDEAL</option>
-    <option value="Tikkie">🔗 Tikkie (online Betaal-Link)</option>
+    <option value="IDEAL Online-Betaal-Link">🌐 IDEAL Online-Betaal-Link</option>
+    <option value="Tikkie">🔗 Tikkie</option>
     <option value="Pin bij chauffeur">💳 Pin bij chauffeur</option>
     <option value="Contant">💶 Contant</option>
   </select>
 
-  <label for="kortingscode" id="labelKorting"> 💰 Kortingscode 💰  </label>
-  <input type="text" id="kortingscode" placeholder="Voer uw kortingscode in" aria-label="Kortingscode" />
+  <label for="kortingscode" id="labelKorting">💰 Kortingscode 💰</label>
+  <input 
+    type="text" 
+    id="kortingscode" 
+    placeholder="Voer uw kortingscode in" 
+    aria-label="Kortingscode" 
+  />
 
   <label for="opmerkingen" id="labelOpmerkingen">✏️ Opmerkingen ✏️</label>
-  <textarea id="opmerkingen" placeholder="Bijvoorbeeld: helpen met bagage, bijzonderheden, etc." rows="2" style="resize:vertical; background:#222; color:#fff; border-radius:5px; width:100%; margin:0.5rem 0; padding:0.7rem;"></textarea>
+  <textarea 
+    id="opmerkingen" 
+    placeholder="Bijvoorbeeld: helpen met bagage, bijzonderheden, etc." 
+    rows="2"
+    style="resize:vertical; background:#222; color:#fff; border-radius:5px; width:100%; margin:0.5rem 0; padding:0.7rem;"
+  ></textarea>
 
-  <button onclick="toggleHuisdier()" id="huisdierBtn">🐶 Huisdieren €5,- 🐶</button>
-<input type="hidden" id="huisdieren" value="0">
-  
-  <button onclick="toggleSpoed()" id="spoedBtn">🚀 Spoedrit €10 🚀</button>
+  <button type="button" onclick="toggleHuisdier()" id="huisdierBtn">🐶 Huisdieren €5,- 🐶</button>
+  <input type="hidden" id="huisdieren" value="0">
+
+  <button type="button" onclick="toggleSpoed()" id="spoedBtn">🚀 Spoedrit €10 🚀</button>
 
   <button onclick="toggleAkkoord()" id="akkoordBtn">🚨 Annuleringskosten €10,- 🚨</button>
-<input type="hidden" id="akkoord" value="0">
+  <input type="hidden" id="akkoord" value="0">
 
   <button onclick="berekenRit()" id="btnBereken">🚖 Bereken ritprijs 🚖</button>
 
   <div id="resultaat"></div>
 
-  <button id="idealPayBtn" style="display:none; width:100%; margin:0.5rem 0;" onclick="startIdealPay()">💳 Direct betalen via iDEAL</button>
+  <button id="idealPayBtn" style="display:none; width:100%; margin:0.5rem 0; display:flex; align-items:center; justify-content:center; gap:0.5em;" onclick="startIdealPay()">
+  <img src="ideal-logo.svg" alt="iDEAL" style="height:1.5em; vertical-align:middle; margin-right:0.3em; background:#fff; border-radius:4px; box-shadow:0 1px 4px #0001;" />
+  Direct betalen via iDEAL
+</button>
 
   <div id="adminSpecificaties" style="display:none;"></div>
 
-  <a id="whatsappKnop" href="#" target="_blank" style="display:none;">
-    <button>📩 Bevestig & Verstuur naar WhatsApp 📩</button>
-  </a>
-  <script>
-    // Zorg dat bij klikken op WhatsApp-knop ook boekRit() wordt aangeroepen
-    document.addEventListener('DOMContentLoaded', function() {
-      var whatsappKnop = document.getElementById('whatsappKnop');
-      if (whatsappKnop) {
-        whatsappKnop.addEventListener('click', function() {
-          boekRit();
-        });
-      }
-    });
-  </script>
+  <div id="bevestigContainer" style="display:none;">
+    <a id="whatsappKnop" href="https://wa.me/message/WPXHSY3TEYVPA1" target="_blank">
+      <button disabled aria-disabled="true" tabindex="-1" style="pointer-events:none;">📩 Bevestig & Verstuur naar WhatsApp 📩</button>
+    </a>
+  </div>
 </div>
 
+<!-- Zet ALLE scripts vlak voor </body> -->
 <script>
 // --- FA Taxi Boeking | Modern, robuust & foutloos script ---
 'use strict';
+
+// --- DraftRit automatisch terugzetten bij laden pagina ---
+// Hulpfunctie voor snelle ID-selectie
+function $id(id) { return document.getElementById(id); }
+
+// WhatsApp-knop tonen/verbergen (herbruikbaar)
+function updateWhatsappKnopVisibility() {
+  // Toon/verberg iDEAL-betaalknop altijd correct
+  const idealBtn = $id('idealPayBtn');
+  const betaalmethode = $id('betaalmethode')?.value;
+  if (idealBtn) {
+    if (betaalmethode === 'IDEAL Online-Betaal-Link') {
+      idealBtn.style.display = '';
+    } else {
+      idealBtn.style.display = 'none';
+    }
+  }
+  const bevestigContainer = $id('bevestigContainer');
+  if (bevestigContainer) {
+    const hide = (betaalmethode === 'IDEAL Online-Betaal-Link');
+    bevestigContainer.style.setProperty('display', hide ? 'none' : '', 'important');
+  }
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Reset betalingGeslaagd als iDEAL geselecteerd bij laden
+  if ($id('betaalmethode')?.value === 'IDEAL Online-Betaal-Link' && localStorage.getItem('betalingGeslaagd') !== '1') {
+    localStorage.setItem('betalingGeslaagd','0');
+  }
+  $id('betaalmethode')?.addEventListener('change', function() {
+    if ($id('betaalmethode')?.value === 'IDEAL Online-Betaal-Link' && localStorage.getItem('betalingGeslaagd') !== '1') {
+      localStorage.setItem('betalingGeslaagd','0');
+    }
+    updateWhatsappKnopVisibility();
+  });
+  updateWhatsappKnopVisibility();
+  window.updateWhatsappKnopVisibility = updateWhatsappKnopVisibility;
+});
+
+try {
+  const draft = JSON.parse(localStorage.getItem('draftRit'));
+  if (draft) {
+    Object.keys(draft).forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (id === 'huisdieren') {
+        el.value = draft[id] || '0';
+        // Eventueel ook de knop visueel aanpassen
+        const btn = document.getElementById('huisdierBtn');
+        if (btn) {
+          if (el.value === '1') {
+            btn.innerText = '✅ Huisdier toegevoegd €5,-';
+            btn.style.background = 'gold';
+            btn.style.color = 'black';
+          } else {
+            btn.innerText = '🐶 Huisdieren €5,- 🐶';
+            btn.style.background = '';
+            btn.style.color = '';
+          }
+        }
+      } else if (id === 'opmerkingen') {
+        el.value = draft[id] || '';
+      } else {
+        el.value = draft[id] || '';
+      }
+    });
+  }
+} catch (e) { }
+
 let spoedToeslag = 0;
 let lastPrice = 0; // voor iDEAL betaling
 const ADMIN_WACHTWOORD_HASH = "d8c4248ef9765da2dc5434444e41d6df23e07e7ce7c1a834fe979983e097af77";
@@ -1666,6 +1756,17 @@ async function sha256(str) {
   const hashBuf = await crypto.subtle.digest('SHA-256', buf);
   return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
+// WhatsApp-knop activeert boekRit
+window.addEventListener('DOMContentLoaded', function() {
+  var whatsappKnop = document.getElementById('whatsappKnop');
+  if (whatsappKnop) {
+    whatsappKnop.addEventListener('click', function() {
+      boekRit();
+    });
+  }
+});
+</script>
+<script>
 let huisdierenToeslag = 5; // Kosten voor huisdieren
 let geplandeRitToeslag = 7.50; // Kosten voor geplande rit
 let adminData = {};
@@ -1838,6 +1939,15 @@ function berekenRitprijs(afstand, duur, weer) {
   return totalePrijs;
 }
 
+// Function to convert latitude and longitude to tile coordinates (TMS/Slippy Map)
+function deg2tile(lat_deg, lon_deg, zoom) {
+  const lat_rad = Math.PI * lat_deg / 180;
+  const n = Math.pow(2.0, zoom);
+  const xtile = Math.floor((lon_deg + 180.0) / 360.0 * n);
+  const ytile = Math.floor((1.0 - Math.log(Math.tan(lat_rad) + (1 / Math.cos(lat_rad))) / Math.PI) / 2.0 * n);
+  return { x: xtile, y: ytile, zoom: zoom };
+}
+
 async function getTrafficToeslag(start, end) {
   const midLat = (start[1] + end[1]) / 2;
   const midLon = (start[0] + end[0]) / 2;
@@ -1853,20 +1963,76 @@ async function getTrafficToeslag(start, end) {
     else if (ratio > 0.4) surcharge = 1.15;
     else surcharge = 1.5;
   }
-  // Incidents (optional)
-  const bbox = `${midLat-0.01},${midLon-0.01},${midLat+0.01},${midLon+0.01}`;
-  const incUrl = `https://api.tomtom.com/traffic/services/4/incidentDetails/s3/25/json?bbox=${bbox}&key=${TRAFFIC_API_KEY}`;
-  const inc = await fetch(incUrl).then(r=>r.json()).catch(()=>null);
-  if (inc && inc.incidents) {
-    // lane closures
-    (inc.incidents.roadClosureDetails||[]).forEach(()=> surcharge *= 1.03);
-    // road works
-    (inc.incidents.roadWorks||[]).forEach(() => surcharge *= 1 + (0.05 + Math.random() * 0.10));
-    // accidents
-    (inc.incidents.trafficIncidents||[]).filter(i=>i.eventType==='ACCIDENT').forEach(() => surcharge *= 1 + (0.20 + Math.random() * 0.30));
+  // Incidenten via NDW Open Data (gratis, Nederland)
+  // NDW fileinformatie: https://opendata.ndw.nu/files_ndw.csv.gz (CSV) of https://opendata.ndw.nu/trafficspeed.xml.gz (XML)
+  // Voorbeeld: we gebruiken de NDW actuele files als JSON via een proxy (of backend), want CORS blokkeert directe fetch naar .gz
+  // DEMO: hieronder een fetch naar een NDW JSON-proxy (vervang door je eigen backend/proxy voor productie)
+  try {
+    // Haal NDW files op via eigen backend (proxy)
+    const ndwUrl = 'http://localhost:3001/api/ndwfiles';
+    // Timeout wrapper voor fetch
+    async function fetchWithTimeout(resource, options = {}) {
+      const { timeout = 1000 } = options;
+      return Promise.race([
+        fetch(resource, options),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout))
+      ]);
+    }
+    let ndwResp = null;
+    try {
+      ndwResp = await fetchWithTimeout(ndwUrl, { timeout: 1000 });
+    } catch (err) {
+      console.warn('NDW fetch timeout of error:', err.message);
+      ndwResp = null;
+    }
+    if (ndwResp && ndwResp.ok) {
+      const ndwData = await ndwResp.json();
+      // ndwData is een lijst van files met locatie, lengte, etc.
+      // Zoek alleen files in de buurt van de route (tussen ophaal en afzet)
+      const routeBufferKm = 10; // buffer rond de lijn in km
+      const toRad = deg => deg * Math.PI / 180;
+      const toDeg = rad => rad * 180 / Math.PI;
+      // Haversine-afstand in km
+      function haversine(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      }
+      // Projecteer een file op het lijnstuk start-end en check afstand
+      function pointToSegmentDistance(lat, lon, lat1, lon1, lat2, lon2) {
+        // Bron: https://stackoverflow.com/a/1501725
+        function sqr(x) { return x*x; }
+        function dist2(x, y, x1, y1) { return sqr(x-x1) + sqr(y-y1); }
+        const t = Math.max(0, Math.min(1, ((lat-lat1)*(lat2-lat1)+(lon-lon1)*(lon2-lon1)) / (sqr(lat2-lat1)+sqr(lon2-lon1))));
+        const projLat = lat1 + t*(lat2-lat1);
+        const projLon = lon1 + t*(lon2-lon1);
+        return haversine(lat, lon, projLat, projLon);
+      }
+      const startLat = start[1], startLon = start[0];
+      const endLat = end[1], endLon = end[0];
+      const filesNearby = (ndwData || []).filter(f => {
+        if (!f.latitude || !f.longitude) return false;
+        const flat = parseFloat(f.latitude);
+        const flon = parseFloat(f.longitude);
+        // Afstand tot lijnstuk route
+        return pointToSegmentDistance(flat, flon, startLat, startLon, endLat, endLon) <= routeBufferKm;
+      });
+      console.log('Aantal NDW files dichtbij route:', filesNearby.length);
+      if (filesNearby.length > 0) {
+        surcharge *= 1 + (0.10 * filesNearby.length); // 10% per file dichtbij route
+      }
+    } else {
+      console.warn('NDW incidenten niet beschikbaar', ndwResp.status);
+    }
+  } catch (err) {
+    console.warn('NDW incidenten ophalen mislukt', err);
   }
+
   return surcharge;
 }
+
 
 function pasKortingscodeToe(ritprijs) {
   const code = document.getElementById("kortingscode").value.trim();
@@ -1972,15 +2138,12 @@ async function berekenRit() {
 
   const bericht = `${spoedBericht}🚖 FA TAXI SERVICE 4 Personen 🚖\n📲 Nieuw ritverzoek\n📍 Ophaaladres: ${ophalen}\n📍 Afzetadres: ${afzetten}\n🕒 Tijdstip: ${tijdstipWeergave}\n💳 Betaalmethode: ${betaalmethode}\n${opmerkingen ? '✏️ Opmerkingen: ' + opmerkingen + '\n' : ''}${document.getElementById("resultaat").innerText}`;
   document.getElementById("whatsappKnop").href = `https://wa.me/message/WPXHSY3TEYVPA1?text=${encodeURIComponent(bericht)}`;
-  document.getElementById("whatsappKnop").style.display = "block";
+  // WhatsApp-knop zichtbaarheid ALLEEN via updateWhatsappKnopVisibility()
+  if (typeof updateWhatsappKnopVisibility === 'function') updateWhatsappKnopVisibility();
 
-  // toon iDEAL knop voor Online betaallink
+  // iDEAL knop wordt altijd via updateWhatsappKnopVisibility geregeld
   lastPrice = ritprijs;
-  if (betaalmethode === 'Online betaallink') {
-    document.getElementById('idealPayBtn').style.display = 'block';
-  } else {
-    document.getElementById('idealPayBtn').style.display = 'none';
-  }
+
   } catch (err) {
     alert("Er is een fout opgetreden bij het berekenen van de rit: " + (err.message || err));
   }
@@ -2084,6 +2247,10 @@ function toggleAkkoord() {
 }
 // --- Boekingsopslag met rit-id ---
 function boekRit() {
+  // Reset betaalstatus voor nieuwe rit
+  localStorage.setItem('betalingGeslaagd', '0');
+  // Forceer update van WhatsApp-knop zichtbaarheid
+  if (typeof updateWhatsappKnopVisibility === 'function') updateWhatsappKnopVisibility();
   // Gegevens ophalen
   const ophaaladres = document.getElementById("ophaaladres").value;
   const afzetadres = document.getElementById("afzetadres").value;
@@ -2143,7 +2310,16 @@ async function zoekAdresSuggesties(inputElem, suggestieDivId) {
     // Toon eerst alleen Nederlandse adressen
     let nlResults = data.results.filter(r => r.components && r.components.country_code === 'nl');
     let shownResults = nlResults.length > 0 ? nlResults : data.results;
-    suggestieDiv.innerHTML = shownResults.map(r => `<div class='adres-suggestie-item' onclick="kiesAdresSuggestie('${inputElem.id}', '${suggestieDivId}', '${r.formatted.replace(/'/g, "&#39;")}' )">${r.formatted}</div>`).join('');
+    // Helper om JS-string veilig te escapen voor HTML attribuut
+    function escapeHtmlAttr(str) {
+      return String(str)
+        .replace(/'/g, "&#39;")
+        .replace(/\\/g, "\\\\")
+        .replace(/\n/g, " ")
+        .replace(/\r/g, " ")
+        .replace(/\"/g, '&quot;');
+    }
+    suggestieDiv.innerHTML = shownResults.map(r => `<div class='adres-suggestie-item' onclick="kiesAdresSuggestie('${inputElem.id}', '${suggestieDivId}', '${escapeHtmlAttr(r.formatted)}')">${r.formatted}</div>`).join('');
     suggestieDiv.classList.add('active');
   } catch {
     suggestieDiv.innerHTML = '';
